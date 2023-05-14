@@ -1,0 +1,526 @@
+{
+	nvim_create_autocmd: autocmd,
+	nvim_create_augroup: autogroup,
+} = vim.api
+import expand, filereadable, isdirectory from vim.fn
+import concat from table
+
+vim.cmd 'packadd termdebug'
+
+with vim.opt
+	-- Appearance
+	.breakindent = true
+	.linebreak = true
+	.shiftwidth = 4
+	.tabstop = 4
+	.wrap = true
+	.scrolloff = 7
+	.number = true
+	.relativenumber = true
+	.hlsearch = true
+	.showcmd = true
+
+	-- Backups
+	.backup = false
+	.writebackup = false
+	.backupdir = '~/.vim/tmp/'
+	.directory = '~/.vim/tmp/'
+
+	-- Behaviour
+	.autoindent = true
+	.smartindent = true
+	.ttimeoutlen = 100
+	.splitbelow = true
+
+	-- Completions
+	.wildmode =
+		* 'longest'
+		* 'list'
+		* 'full'
+	.wildmenu = true
+
+	-- Search
+	.smartcase = true
+
+with vim.o
+	.t_ut = ''
+
+autocmd 'BufEnter',
+	pattern:
+		* '*.em'
+		* '*.md'
+		* '*.tex'
+		* '*.txt'
+	callback: ->
+		with vim.opt
+			.spell = true
+			.spelllang = 'en'
+
+file_associations =
+	'clang-format': 'yaml'
+	cls: 'tex'
+	latexindent: 'yaml'
+	wxs: 'xml'
+	x: 'lex'
+for ext, ft in pairs file_associations
+	autocmd { 'BufNewFile', 'BufRead' },
+		pattern: '*.' .. ext
+		callback: ->
+			with vim.opt_local
+				.ft = ft
+
+lang_behaviours =
+	yaml: -- TODO(kcza): test me!
+		tabstop: 2
+		shiftwidth: 2
+		expandtab: true
+	rst:
+		tabstop: 2
+		shiftwidth: 3
+		expandtab: true
+	haskell: -- TODO(kcza): test me!
+		tabstop: 4
+		shiftwidth: 4
+		expandtab: true
+	c:
+		cindent: true
+for lang, opts in pairs lang_behaviours
+	autocmd 'FileType',
+		pattern: lang
+		callback: ->
+			with vim.opt_local
+				[k] = v for k, v in pairs opts
+
+-- TODO(kcza): return to previous edited line when re-opening file
+-- autocmd 'BufReadPost',
+-- 	pattern: '*'
+-- 	callback: ->
+
+is_list = =>
+	maxk = -1
+	for k in pairs @
+		if 'number' != type k
+			return false
+		if maxk < k
+			maxk = k
+	maxk == #@
+
+to_vim_obj = =>
+	buf = {}
+	build_repr = =>
+		switch type @
+			when 'nil'
+				buf[] = 'none'
+			when 'boolean', 'number'
+				buf[] = tostring @
+			when 'string'
+				buf[] = "'#{@}'"
+			when 'function', 'thread', 'userdata'
+				error "value of inconvertible type: #{@}"
+			when 'table'
+				if is_list @
+					buf[] = '[ '
+					first = true
+					for v in *@
+						if first
+							first = false
+						else
+							buf[] = ', '
+						build_repr v
+					buf[] = ' ]'
+				else
+					buf[] = '{ '
+					first = true
+					for k, v in pairs @
+						if first
+							first = false
+						else
+							buf[] = ', '
+						build_repr k
+						buf[] = ': '
+						build_repr v
+					buf[] = ' }'
+			else
+				print "unknown type #{type @} of: #{@}"
+	build_repr @
+	concat buf
+
+-- Load plugins
+do
+	if not isdirectory vim.fn.expand '~/.vim/'
+		vim.fn.mkdir vim.fn.expand '~/.vim/'
+	if not filereadable expand '~/.vim/plug.vim'
+		vim.cmd 'silent! curl -fLo ~/.vim/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+	Cmd = => concat { '<cmd>', @, '<cr>' }
+	CmdPrompt = => "<cmd>#{@}"
+	Cmds = =>
+		concat with {}
+			for e in *@
+				[] = '<cmd>'
+				[] = e
+				[] = '<cr>'
+	Plug = => concat { '<plug>(', @, ')' }
+	Leader = => '<leader>' .. @
+	Ctrl = => concat { '<C-', @, '>' }
+	F = => "<F#{@}>"
+
+	plugins =
+		'experience':
+			phoney: true
+			needs:
+				* 'typing'
+				* 'theme'
+				* 'keymap'
+				* 'lsp'
+
+		'typing':
+			phoney: true
+			needs:
+				* 'reedes/vim-textobj-quote'
+				* 'reedes/vim-litecorrect'
+			post: ->
+				with group = autogroup 'textobj_quote', clear: true
+					filetypes =
+						* 'markdown'
+						* 'text'
+						* 'mail'
+						* 'gitcommit'
+					for ft in *filetypes
+						autocmd 'FileType',
+							pattern: ft
+							:group
+							callback: -> vim.fn['textobj#quote#init']!
+						autocmd 'FileType',
+							pattern: ft
+							:group
+							callback: -> vim.fn['litecorrect#init']!
+
+		'theme':
+			phoney: true
+			needs:
+				* 'vim-airline/vim-airline-themes'
+				* 'ellisonleao/gruvbox.nvim'
+			post: ->
+				vim.cmd 'syntax enable'
+
+				with vim.g
+					.gruvbox_italic = 1
+					.gruvbox_italic_comments = 1
+					.gruvbox_italic_strings = 1
+					.airline_theme = 'gruvbox'
+					.airline_powerline_fonts = 1
+					["airline#extensions#tabline#formatter"] = 'unique_tail_improved'
+					["airline#extensions#tabline#enabled"] = 0
+					["airline#extensions#tabline#show_buffers"] = 0
+					["airline#extensions#tagbar#flags"] = 'f' -- show full tag hierarchy
+
+				vim.opt.cursorcolumn = true
+				autocmd 'InsertEnter',
+					pattern: '*'
+					callback: ->
+						with vim.opt
+							.cursorcolumn = false
+				autocmd 'InsertLeave' ,
+					pattern: '*'
+					callback: ->
+						with vim.opt
+							.cursorcolumn = true
+
+				with vim.o
+					.t_SI = [[\e[6 q]]
+					.t_EI = [[\e[2 q]]
+
+				import 'gruvbox' as :setup
+				setup!
+				vim.o.background = 'dark'
+				vim.cmd 'colorscheme gruvbox' -- TODO(kcza): fix me!
+		'keymap':
+			phoney: true
+			-- needs:
+			-- 	*
+			post: ->
+				with vim.keymap
+					-- General
+					.set { 'n', 'v' }, ';', ':'
+					.set 'n', '!', ':!'
+					.set 'n', ',', Cmd'noh'
+
+					-- TODO(kcza): lsp interactions
+
+					-- Tabs and buffers
+					.set 'n', 'th', Cmd'tabp'
+					.set 'n', 'tl', Cmd'tabn'
+					.set 'n', Leader'wh', Cmds{ 'w', 'vsplit', 'Files' }
+					.set 'n', Leader'wj', Cmds{ 'w', 'sbuf' } .. Ctrl'W' .. 'j' .. Cmd 'Files'
+					.set 'n', Leader'wk', Cmds{ 'w', 'sbuf', 'Files' }
+					.set 'n', Leader'wl', Cmds{ 'w', 'vsplit' } .. Ctrl'W' .. 'l' .. Cmd 'Files'
+					.set 'n', Leader'th', Cmd 'vert term'
+					.set 'n', Leader'tj', Cmd 'term'
+					.set 'n', Leader'tk', Cmd'term' .. Ctrl'W' .. 'K'
+					.set 'n', Leader'tl', Cmd'vert term' .. Ctrl'W' .. 'L'
+
+					-- File types
+					.set 'n', Leader'f', Cmd'Files'
+					.set 'n', Leader'F', Cmd'Filetypes'
+
+					-- Debug
+					.set 'n', Leader'dt', CmdPrompt'Termdebug'
+					.set 'n', Leader'dp', CmdPrompt'Evaluate'
+					.set 'n', Leader'dr', CmdPrompt'Evaluate'
+					.set 'n', Leader'dc', Cmd'Continue'
+
+					-- Misc
+					.set { 'n', 'x' }, 'ga', Plug'EasyAlign'
+					.set 'n', (F 4), 'gggqG'
+					.set 'n', (F 5), Cmds { 'redraw!', 'AirlineRefresh', 'edit %' }
+					.set 'n', (F 11), Cmds { 'w', '!!' }
+					.set 'n', (F 12), Cmd'!make'
+
+					autocmd 'FileType',
+						pattern: 'markdown'
+						callback: ->
+							.set 'v', Leader'asdf', Cmd'EasyAlign*<bar>'
+
+					autocmd 'LspAttach',
+						callback: (args) ->
+							client = vim.lsp.get_client_by_id(args.data.client_id)
+							if client.server_capabilities.hoverProvider
+								.set 'n', 'K', vim.lsp.buf.hover, buffer: args.buf
+
+		'lsp':
+			phoney: true
+			post: ->
+				autocmd 'LspAttach',
+					callback: (args) ->
+						vim.opts.omnifunc = vim.lsp.omnifunc
+
+		'junegunn/vim-plug': {}
+		'vim-autocomplete/vim-autocomplete': {}
+		'tpope/vim-commentary': {}
+		'airblade/git-gutter':
+			post: ->
+				vim.opt.updatetime = 100
+				vim.g.gitgutter_overrride_sign_column_highlight = 1
+		'junegunn/fzf.vim':
+			needs:
+				* 'junegunn/fzf'
+		'junegunn/fzf': {}
+		'vim-scripts/TagHighlight':
+			post: ->
+				with vim.keymap
+					.set 'n', (F 6), Cmd'UpdateTypesFile'
+		'tpope/vim-fugitive':
+			post: ->
+				with vim.keymap
+					Git = => Leader 'g' .. @
+					.set 'n', Git's', Cmd 'G status'
+					.set 'n', Git'a', Cmd 'G add % --patch'
+					.set 'n', Git'A', Cmd 'G add %'
+					.set 'n', Git'c', Cmd 'G commit'
+					.set 'n', Git'c', Cmd 'G commit --amend'
+					.set 'n', Git'd', Cmd 'G diff %'
+					.set 'n', Git'p', Cmd 'G pull --ff-only \\| <cmd>edit'
+					.set 'n', Git'P', Cmd 'G push'
+					.set 'n', Git'S', Cmd 'G stash'
+					.set 'n', Git'l', Cmd 'G log --graph'
+		'vim-airline/vim-airline': {}
+		'vim-airline/vim-airline-themes':
+			needs:
+				* 'vim-airline/vim-airline'
+		'tpope/vim-surround': {}
+		'tpope/repeat': {}
+		'vim-autoformat/vim-autoformat':
+			post: ->
+				with vim.keymap
+					.set 'n', (F 3), Cmds { 'w', 'Autoformat' }
+		'Valloric/YouCompleteMe':
+			options:
+				do: './install.py --all'
+				for:
+					* 'c'
+					* 'cpp'
+					* 'lex'
+					* 'yacc'
+		'editorconfig/editorconfig-vim':
+			post: ->
+				vim.g.EditorConfig_exclude_patterns =
+					* 'fugitive://.*'
+					* 'scp://.*'
+		'vim-scripts/DoxygenToolkit.vim':
+			post: ->
+				with vim.g
+					.DoxygenToolkit_authorName = 'Edward Jones'
+					.DoxygenToolkit_versionString = ''
+					.doxygen_enhanced_colour = 1
+		'Yggdroot/indentLine':
+			post: ->
+				vim.g.indentLine_char_list = { '|' }
+		'ellisonleao/gruvbox.nvim': {}
+		'inkarkat/vim-ingo-library': {}
+		'inkarkat/vim-ShowTrailingWhitespace':
+			needs:
+				* 'inkarkat/vim-ingo-library'
+		'inkarkat/vim-DeleteTrailingWhitespace':
+			needs:
+				* 'inkarkat/vim-ingo-library'
+		'tpope/vim-markdown':
+			post: ->
+				vim.g.markdown_fenced_languages =
+					* 'bash'
+					* 'c'
+					* 'css'
+					* 'emblem'
+					* 'html'
+					* 'json'
+					* 'lua'
+					* 'moon'
+					* 'python'
+					* 'scss'
+					* 'yaml'
+		'kana/vim-textobj-user': {}
+		'reedes/vim-textobj-quote':
+			needs:
+				* 'kana/vim-textobj-user'
+			post: ->
+				vim.opt.compatible = false
+				vim.cmd 'filetype plugin on'
+		'mzlogin/vim-markdown-toc': {}
+		'reedes/vim-litecorrect': {}
+		'preservim/tagbar':
+			needs:
+				* 'vim-airline/vim-airline'
+			post: ->
+				vim.g.tagbar_type_go =
+					ctagstype: 'go'
+					kinds:
+						* 'p:package'
+						* 'i:imports:1'
+						* 'c:constants'
+						* 'v:variables'
+						* 't:types'
+						* 'n:interfaces'
+						* 'w:fields'
+						* 'e:embedded'
+						* 'm:methods'
+						* 'r:constructor'
+						* 'f:functions'
+					sro: '.'
+					kind2scope:
+						t: 'ctype'
+						n: 'ntype'
+					scope2kind:
+						ctype: 't'
+						ntype: 'n'
+					ctagsbin: 'gotags'
+					ctagsargs: '-sort -silent'
+		'junegunn/vim-easy-align':
+			options:
+				for: 'markdown'
+		'justinmk/vim-syntax-extra':
+			options:
+				for:
+					* 'c'
+					* 'lex'
+					* 'yacc'
+		'leafo/moonscript-vim': {}
+		'TheSignPainter98/emblem-vim': {}
+		'vim-scripts/CoqIDE':
+			options:
+				for: 'coq'
+		'whonore/Coqtail':
+			options:
+				for: 'coq'
+		'derekwyatt/vim-fswitch': {}
+		'cespare/vim-toml':
+			options:
+				for: 'toml'
+		'aliou/bats.vim': {}
+		'xevz/vim-squirrel':
+			options:
+				for: 'squirrel'
+		'ianding1/leetcode.vim':
+			options:
+				do: 'pip3 install --user keyring browser_cookie3'
+			post: ->
+				with vim.g
+					.leetcode_browser = 'firefox'
+					.leetcode_solution_filetype = 'golang' -- 'python3' 'c' 'cpp'
+					.leetcode_hide_paid_only = 1
+					.leetcode_hide_companies = 0
+					.leetcode_problemset = 'all'
+				with vim.keymap
+					.set 'n', 'gll', ':LeetCodeList<cr>'
+					.set 'n', 'glt', ':LeetCodeTest<cr>'
+					.set 'n', 'glT', ':LeetCodeTest<cr>:wq<cr>'
+					.set 'n', 'gls', ':LeetCodeSubmit<cr>'
+					.set 'n', 'gli', ':LeetCodeSignIn<cr>'
+				autocmd 'BufEnter',
+					pattern: 'leetcode:*'
+					callback: -> vim.opt_local.noswapfile = true
+		'fatih/vim-go':
+			options:
+				for: 'go'
+		'cappyzawa/starlark.vim':
+			options:
+				for: 'starlark'
+		'itspriddle/vim-shellcheck':
+			options:
+				for:
+					* 'sh'
+					* 'bash'
+					* 'zsh'
+		'pigpigyyy/yuescript-vim':
+			options:
+				for: 'yue'
+		'rust-lang/rust.vim':
+			options:
+				for: 'rust'
+		'qnighy/lalrpop.vim':
+			options:
+				for: 'lalrpop'
+		'rhaiscript/vim-rhai':
+			options:
+				for: 'rhai'
+		'teal-language/vim-teal':
+			options:
+				for: 'teal'
+		'dense-analysis/ale':
+			options:
+				for: 'teal'
+		'tpope/vim-endwise': {}
+
+	loaded = {}
+	stack = {}
+	load_plugin = (name) ->
+		return if loaded[name]
+		for item in *stack
+			if item == name
+				error "dependency cycle: #{to_vim_obj stack}"
+
+		stack[] = name
+
+		plugin = plugins[name]
+		unless plugin?
+			error "unknown plugin #{name}"
+
+		plugin.pre?!
+
+		if needs = plugin.needs
+			load_plugin need for need in *needs
+
+		unless plugin.phoney
+			plug_cmd = "Plug '#{name}'"
+			if options = plugin.options
+				plug_cmd ..= ', ' .. to_vim_obj options
+			vim.cmd plug_cmd
+		loaded[name] = true
+
+		plugin.post?!
+
+		stack[] = nil
+
+	vim.cmd 'source ~/.vim/plug.vim'
+	vim.fn['plug#begin'] '~/.vim/plugged/'
+	load_plugin name for name in pairs plugins
+	vim.fn['plug#end']!

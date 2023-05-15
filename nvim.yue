@@ -6,6 +6,7 @@ import expand, filereadable, isdirectory from vim.fn
 import concat from table
 
 vim.cmd 'packadd termdebug'
+vim.loader.enable!
 
 with vim.opt
 	-- Appearance
@@ -23,8 +24,8 @@ with vim.opt
 	-- Backups
 	.backup = false
 	.writebackup = false
-	.backupdir = '~/.vim/tmp/'
-	.directory = '~/.vim/tmp/'
+	.backupdir = vim.fn.expand '~/.vim/tmp/'
+	.directory = vim.fn.expand '~/.vim/tmp/'
 
 	-- Behaviour
 	.autoindent = true
@@ -147,10 +148,16 @@ to_vim_obj = =>
 
 -- Load plugins
 do
-	if not isdirectory vim.fn.expand '~/.vim/'
-		vim.fn.mkdir vim.fn.expand '~/.vim/'
-	if not filereadable expand '~/.vim/plug.vim'
-		vim.cmd 'silent! curl -fLo ~/.vim/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+	lazypath = vim.fn.stdpath'data' .. '/lazy/lazy.nvim'
+	unless vim.loop.fs_stat lazypath
+		vim.fn.system
+			* 'git'
+			* 'clone'
+			* '--filter=blob:none'
+			* 'https://github.com/folke/lazy.nvim.git'
+			* '--branch=stable'
+			* lazypath
+	vim.opt.rtp\prepend lazypath
 
 	Cmd = => concat { '<cmd>', @, '<cr>' }
 	CmdPrompt = => "<cmd>#{@}"
@@ -164,22 +171,23 @@ do
 	Leader = => '<leader>' .. @
 	Ctrl = => concat { '<C-', @, '>' }
 	F = => "<F#{@}>"
+	Git = => Leader 'g' .. @
 
 	plugins =
 		'experience':
 			phoney: true
 			needs:
-				* 'typing'
+				* 'text'
 				* 'theme'
 				* 'keymap'
 				* 'lsp'
 
-		'typing':
+		'text':
 			phoney: true
 			needs:
 				* 'reedes/vim-textobj-quote'
 				* 'reedes/vim-litecorrect'
-			post: ->
+			config: ->
 				with group = autogroup 'textobj_quote', clear: true
 					filetypes =
 						* 'markdown'
@@ -200,20 +208,20 @@ do
 			phoney: true
 			needs:
 				* 'vim-airline/vim-airline-themes'
-				* 'ellisonleao/gruvbox.nvim'
-			post: ->
+				* 'vim-airline/vim-airline'
+				* 'gorbit99/codewindow.nvim'
+			config: ->
 				vim.cmd 'syntax enable'
 
 				with vim.g
-					.gruvbox_italic = 1
-					.gruvbox_italic_comments = 1
-					.gruvbox_italic_strings = 1
-					.airline_theme = 'gruvbox'
+					.airline_theme = 'blood_red'
 					.airline_powerline_fonts = 1
 					["airline#extensions#tabline#formatter"] = 'unique_tail_improved'
 					["airline#extensions#tabline#enabled"] = 0
 					["airline#extensions#tabline#show_buffers"] = 0
 					["airline#extensions#tagbar#flags"] = 'f' -- show full tag hierarchy
+				with vim.opt
+					.showmode = false
 
 				vim.opt.cursorcolumn = true
 				autocmd 'InsertEnter',
@@ -231,22 +239,14 @@ do
 					.t_SI = [[\e[6 q]]
 					.t_EI = [[\e[2 q]]
 
-				import 'gruvbox' as :setup
-				setup!
-				vim.o.background = 'dark'
-				vim.cmd 'colorscheme gruvbox' -- TODO(kcza): fix me!
 		'keymap':
 			phoney: true
-			-- needs:
-			-- 	*
-			post: ->
+			config: ->
 				with vim.keymap
 					-- General
 					.set { 'n', 'v' }, ';', ':'
 					.set 'n', '!', ':!'
 					.set 'n', ',', Cmd'noh'
-
-					-- TODO(kcza): lsp interactions
 
 					-- Tabs and buffers
 					.set 'n', 'th', Cmd'tabp'
@@ -282,90 +282,158 @@ do
 						callback: ->
 							.set 'v', Leader'asdf', Cmd'EasyAlign*<bar>'
 
-					autocmd 'LspAttach',
-						callback: (args) ->
-							client = vim.lsp.get_client_by_id(args.data.client_id)
-							if client.server_capabilities.hoverProvider
-								.set 'n', 'K', vim.lsp.buf.hover, buffer: args.buf
+					-- autocmd 'LspAttach',
+					-- 	callback: (args) ->
+					-- 		client = vim.lsp.get_client_by_id(args.data.client_id)
+					-- 		if client.server_capabilities.hoverProvider
+					-- 			.set 'n', 'K', vim.lsp.buf.hover, buffer: args.buf
 
 		'lsp':
 			phoney: true
-			post: ->
-				autocmd 'LspAttach',
-					callback: (args) ->
-						vim.opts.omnifunc = vim.lsp.omnifunc
+			needs:
+				* 'neovim/nvim-lspconfig'
+			-- config: ->
+				-- TODO(kcza): lsp interactions keybinds
+				-- autocmd 'LspAttach',
+					-- callback: (args) ->
+						-- with vim.opts
+						-- 	.omnifunc = vim.lsp.omnifunc
+						-- 	.tagfunc = vim.lsp.tagfunc
+						-- 	.formatexpr = vim.lsp.formatexpr
 
-		'junegunn/vim-plug': {}
-		'vim-autocomplete/vim-autocomplete': {}
+		'neovim/nvim-lspconfig':
+			config: ->
+				import 'lspconfig' as :rust_analyzer
+
+				rust_analyzer.setup {}
+
+				autocmd 'LspAttach',
+					group: autogroup 'UserLspConfig', {}
+					callback: (event) ->
+						vim.bo[event.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+						vim.bo[event.buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
+						vim.bo[event.buf].formatexpr = 'v:lua.vim.lsp.formatexpr'
+
+						opts = buffer: event.buf
+
+						with vim.keymap
+							.set 'n', 'gd', vim.lsp.definition, opts
+							.set 'n', 'gD', vim.lsp.declaration, opts
+							.set 'n', 'K', vim.lsp.hover, opts
+							.set 'n', 'gi', vim.lsp.implementation, opts
+							.set 'n', '<C-k>', vim.lsp.signature_help, opts
+							.set 'n', 'gr', vim.lsp.references, opts
+							.set 'n', 'gF', (-> vim.lsp.format, async: true), opts
+
+		-- 'vim-autocomplete/vim-autocomplete': {}
 		'tpope/vim-commentary': {}
-		'airblade/git-gutter':
-			post: ->
-				vim.opt.updatetime = 100
-				vim.g.gitgutter_overrride_sign_column_highlight = 1
+
+		-- 'tanvirtin/vgit.nvim':
+		-- 	needs:
+		-- 		* 'nvim-lua/plenary.nvim'
+		-- 	config: ->
+		-- 		import 'vgit' as :setup
+		-- 		setup!
+
+		-- 		vim.o.updatetime = 300
+		-- 		vim.o.incsearch = false
+		-- 		vim.wo.signcolumn = 'yes'
+
+		-- 		vim.cmd 'VGit setup'
+		'nvim-lua/plenary.nvim':
+			lazy: true
+
 		'junegunn/fzf.vim':
+			keys:
+				* { Leader'f', Cmd'Files', desc: 'edit file' }
 			needs:
 				* 'junegunn/fzf'
 		'junegunn/fzf': {}
 		'vim-scripts/TagHighlight':
-			post: ->
-				with vim.keymap
-					.set 'n', (F 6), Cmd'UpdateTypesFile'
+			keys:
+				* { F'6', Cmd'UpdateTypesFile', desc: 'update ctags file' }
 		'tpope/vim-fugitive':
-			post: ->
-				with vim.keymap
-					Git = => Leader 'g' .. @
-					.set 'n', Git's', Cmd 'G status'
-					.set 'n', Git'a', Cmd 'G add % --patch'
-					.set 'n', Git'A', Cmd 'G add %'
-					.set 'n', Git'c', Cmd 'G commit'
-					.set 'n', Git'c', Cmd 'G commit --amend'
-					.set 'n', Git'd', Cmd 'G diff %'
-					.set 'n', Git'p', Cmd 'G pull --ff-only \\| <cmd>edit'
-					.set 'n', Git'P', Cmd 'G push'
-					.set 'n', Git'S', Cmd 'G stash'
-					.set 'n', Git'l', Cmd 'G log --graph'
+			keys:
+				* { Git's', Cmd'G status', desc: 'git status' }
+				* { Git'a', Cmd'G add % --patch', desc: 'git add --patch' }
+				* { Git'A', Cmd'G add %', desc: 'git add' }
+				* { Git'c', Cmd'G commit', desc: 'git commit' }
+				* { Git'c', Cmd'G commit --amend', desc: 'git commit --amend' }
+				* { Git'd', Cmd'G diff %', desc: 'git diff' }
+				* { Git'p', Cmd'G pull --ff-only \\| <cmd>edit', desc: 'git pull --ff-only' }
+				* { Git'P', Cmd'G push', desc: 'git push' }
+				* { Git'S', Cmd'G stash', desc: 'git stash' }
+				* { Git'l', Cmd'G log --graph', desc: 'git log' }
 		'vim-airline/vim-airline': {}
 		'vim-airline/vim-airline-themes':
 			needs:
 				* 'vim-airline/vim-airline'
 		'tpope/vim-surround': {}
-		'tpope/repeat': {}
+		'tpope/vim-repeat': {}
 		'vim-autoformat/vim-autoformat':
-			post: ->
-				with vim.keymap
-					.set 'n', (F 3), Cmds { 'w', 'Autoformat' }
-		'Valloric/YouCompleteMe':
-			options:
-				do: './install.py --all'
-				for:
-					* 'c'
-					* 'cpp'
-					* 'lex'
-					* 'yacc'
+			keys:
+				* { F'3', Cmds{ 'w', 'Autoformat' }, desc: 'autoformat' }
+		-- 'Valloric/YouCompleteMe':
+		-- 	options:
+		-- 		do: './install.py --all'
+		-- 		ft:
+		-- 			* 'c'
+		-- 			* 'cpp'
+		-- 			* 'lex'
+		-- 			* 'yacc'
 		'editorconfig/editorconfig-vim':
-			post: ->
+			config: ->
 				vim.g.EditorConfig_exclude_patterns =
 					* 'fugitive://.*'
 					* 'scp://.*'
 		'vim-scripts/DoxygenToolkit.vim':
-			post: ->
+			config: ->
 				with vim.g
 					.DoxygenToolkit_authorName = 'Edward Jones'
 					.DoxygenToolkit_versionString = ''
 					.doxygen_enhanced_colour = 1
 		'Yggdroot/indentLine':
-			post: ->
+			config: ->
 				vim.g.indentLine_char_list = { '|' }
-		'ellisonleao/gruvbox.nvim': {}
-		'inkarkat/vim-ingo-library': {}
-		'inkarkat/vim-ShowTrailingWhitespace':
+		'gorbit99/codewindow.nvim':
 			needs:
-				* 'inkarkat/vim-ingo-library'
+				* 'nvim-treesitter/nvim-treesitter'
+			config: ->
+				import 'codewindow' as :setup, :apply_default_keybinds, :open_minimap
+				setup!
+				apply_default_keybinds!
+		'nvim-treesitter/nvim-treesitter':
+			config: ->
+				import 'nvim-treesitter.configs' as :setup
+				setup
+					ensure_installed:
+						* 'go'
+						* 'lua'
+						* 'rust'
+					auto_install: true
+					highlight:
+						enable: true
+				vim.cmd 'silent TSUpdate'
+		'ellisonleao/gruvbox.nvim':
+			config: ->
+				require'gruvbox'.setup!
+
+				vim.o.background = 'dark'
+				with vim.g
+					.gruvbox_italic = 1
+					.gruvbox_italic_comments = 1
+					.gruvbox_italic_strings = 1
+				vim.cmd [[colorscheme gruvbox]]
+
+		'inkarkat/vim-ingo-library': {}
+		-- 'inkarkat/vim-ShowTrailingWhitespace':
+		-- 	needs:
+		-- 		* 'inkarkat/vim-ingo-library'
 		'inkarkat/vim-DeleteTrailingWhitespace':
 			needs:
 				* 'inkarkat/vim-ingo-library'
 		'tpope/vim-markdown':
-			post: ->
+			config: ->
 				vim.g.markdown_fenced_languages =
 					* 'bash'
 					* 'c'
@@ -378,19 +446,21 @@ do
 					* 'python'
 					* 'scss'
 					* 'yaml'
-		'kana/vim-textobj-user': {}
+		'kana/vim-textobj-user':
+			lazy: true
 		'reedes/vim-textobj-quote':
 			needs:
 				* 'kana/vim-textobj-user'
-			post: ->
+			config: ->
 				vim.opt.compatible = false
 				vim.cmd 'filetype plugin on'
 		'mzlogin/vim-markdown-toc': {}
-		'reedes/vim-litecorrect': {}
+		'reedes/vim-litecorrect':
+			lazy: true
 		'preservim/tagbar':
 			needs:
 				* 'vim-airline/vim-airline'
-			post: ->
+			config: ->
 				vim.g.tagbar_type_go =
 					ctagstype: 'go'
 					kinds:
@@ -415,84 +485,100 @@ do
 					ctagsbin: 'gotags'
 					ctagsargs: '-sort -silent'
 		'junegunn/vim-easy-align':
-			options:
-				for: 'markdown'
+			ft: 'markdown'
 		'justinmk/vim-syntax-extra':
-			options:
-				for:
-					* 'c'
-					* 'lex'
-					* 'yacc'
-		'leafo/moonscript-vim': {}
-		'TheSignPainter98/emblem-vim': {}
+			ft:
+				* 'c'
+				* 'lex'
+				* 'yacc'
+		'leafo/moonscript-vim':
+			ft: 'moon'
+		'TheSignPainter98/emblem-vim':
+			ft: 'emblem'
 		'vim-scripts/CoqIDE':
-			options:
-				for: 'coq'
+			ft: 'coq'
 		'whonore/Coqtail':
-			options:
-				for: 'coq'
-		'derekwyatt/vim-fswitch': {}
+			ft: 'coq'
 		'cespare/vim-toml':
-			options:
-				for: 'toml'
-		'aliou/bats.vim': {}
+			ft: 'toml'
+		'aliou/bats.vim':
+			ft: 'bats'
 		'xevz/vim-squirrel':
-			options:
-				for: 'squirrel'
-		'ianding1/leetcode.vim':
-			options:
-				do: 'pip3 install --user keyring browser_cookie3'
-			post: ->
-				with vim.g
-					.leetcode_browser = 'firefox'
-					.leetcode_solution_filetype = 'golang' -- 'python3' 'c' 'cpp'
-					.leetcode_hide_paid_only = 1
-					.leetcode_hide_companies = 0
-					.leetcode_problemset = 'all'
-				with vim.keymap
-					.set 'n', 'gll', ':LeetCodeList<cr>'
-					.set 'n', 'glt', ':LeetCodeTest<cr>'
-					.set 'n', 'glT', ':LeetCodeTest<cr>:wq<cr>'
-					.set 'n', 'gls', ':LeetCodeSubmit<cr>'
-					.set 'n', 'gli', ':LeetCodeSignIn<cr>'
-				autocmd 'BufEnter',
-					pattern: 'leetcode:*'
-					callback: -> vim.opt_local.noswapfile = true
+			ft: 'squirrel'
+		-- 'ianding1/leetcode.vim':
+		-- 	options:
+		-- 		do: 'pip3 install --user keyring browser_cookie3'
+		-- 	post: ->
+		-- 		with vim.g
+		-- 			.leetcode_browser = 'firefox'
+		-- 			.leetcode_solution_filetype = 'golang' -- 'python3' 'c' 'cpp'
+		-- 			.leetcode_hide_paid_only = 1
+		-- 			.leetcode_hide_companies = 0
+		-- 			.leetcode_problemset = 'all'
+		-- 		with vim.keymap
+		-- 			.set 'n', 'gll', ':LeetCodeList<cr>'
+		-- 			.set 'n', 'glt', ':LeetCodeTest<cr>'
+		-- 			.set 'n', 'glT', ':LeetCodeTest<cr>:wq<cr>'
+		-- 			.set 'n', 'gls', ':LeetCodeSubmit<cr>'
+		-- 			.set 'n', 'gli', ':LeetCodeSignIn<cr>'
+		-- 		autocmd 'BufEnter',
+		-- 			pattern: 'leetcode:*'
+		-- 			callback: -> vim.opt_local.noswapfile = true
 		'fatih/vim-go':
-			options:
-				for: 'go'
+			ft: 'go'
 		'cappyzawa/starlark.vim':
-			options:
-				for: 'starlark'
+			ft: 'starlark'
 		'itspriddle/vim-shellcheck':
-			options:
-				for:
-					* 'sh'
-					* 'bash'
-					* 'zsh'
+			ft:
+				* 'sh'
+				* 'bash'
+				* 'zsh'
 		'pigpigyyy/yuescript-vim':
-			options:
-				for: 'yue'
+			ft: 'yue'
 		'rust-lang/rust.vim':
-			options:
-				for: 'rust'
+			ft: 'rust'
 		'qnighy/lalrpop.vim':
-			options:
-				for: 'lalrpop'
+			ft: 'lalrpop'
 		'rhaiscript/vim-rhai':
-			options:
-				for: 'rhai'
-		'teal-language/vim-teal':
-			options:
-				for: 'teal'
+			ft: 'rhai'
 		'dense-analysis/ale':
-			options:
-				for: 'teal'
+			ft: 'teal'
 		'tpope/vim-endwise': {}
 
 	loaded = {}
 	stack = {}
-	load_plugin = (name) ->
+	to_copy = {
+		'branch'
+		'build'
+		'cmd'
+		'commit'
+		'cond'
+		'config'
+		'dependencies'
+		'dev'
+		'dir'
+		'enabled'
+		'event'
+		'ft'
+		'init'
+		'irl'
+		'keys'
+		'lazy'
+		'main'
+		'module'
+		'name'
+		'opts'
+		'pin'
+		'priority'
+		'submodules'
+		'tag'
+		'version'
+	}
+	known_keys = { key, true for key in *to_copy }
+	extra_keys =
+		needs: true
+		phoney: true
+	load_plugin = (spec, name) ->
 		return if loaded[name]
 		for item in *stack
 			if item == name
@@ -500,27 +586,33 @@ do
 
 		stack[] = name
 
+		loaded[name] = true
 		plugin = plugins[name]
-		unless plugin?
-			error "unknown plugin #{name}"
+		lazy_spec = with {}
+			unless plugin?
+				error "unknown plugin #{name}"
 
-		plugin.pre?!
+			-- plugin.pre?!
 
-		if needs = plugin.needs
-			load_plugin need for need in *needs
+			if needs = plugin.needs
+				for need in *needs
+					load_plugin spec, need
+
+			[1] = name
+			for k in pairs plugin
+				unless known_keys[k]? or extra_keys[k]?
+					error "unknown key in plugin spec '#{k}'"
+			for key in *to_copy
+				[key] = plugin[key]
 
 		unless plugin.phoney
-			plug_cmd = "Plug '#{name}'"
-			if options = plugin.options
-				plug_cmd ..= ', ' .. to_vim_obj options
-			vim.cmd plug_cmd
-		loaded[name] = true
-
-		plugin.post?!
+			spec[] = lazy_spec
+		else
+			plugin.config?!
 
 		stack[] = nil
 
-	vim.cmd 'source ~/.vim/plug.vim'
-	vim.fn['plug#begin'] '~/.vim/plugged/'
-	load_plugin name for name in pairs plugins
-	vim.fn['plug#end']!
+	spec = {}
+	for name in pairs plugins
+		load_plugin spec, name
+	require'lazy'.setup spec

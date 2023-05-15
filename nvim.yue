@@ -315,15 +315,24 @@ do
 						vim.bo[event.buf].formatexpr = 'v:lua.vim.lsp.formatexpr'
 
 						opts = buffer: event.buf
-
 						with vim.keymap
-							.set 'n', 'gd', vim.lsp.definition, opts
-							.set 'n', 'gD', vim.lsp.declaration, opts
-							.set 'n', 'K', vim.lsp.hover, opts
-							.set 'n', 'gi', vim.lsp.implementation, opts
-							.set 'n', '<C-k>', vim.lsp.signature_help, opts
-							.set 'n', 'gr', vim.lsp.references, opts
 							.set 'n', 'gF', (-> vim.lsp.format, async: true), opts
+
+							client = vim.lsp.get_client_by_id(event.data.client_id)
+							presets =
+								definitionProvider: -> .set 'n', 'gd', vim.lsp.definition, opts
+								declarationProvider: -> .set 'n', 'gD', vim.lsp.declaration, opts
+								hoverProvider: -> .set 'n', 'K', vim.lsp.hover, opts
+								implementationProvider: -> .set 'n', 'gi', vim.lsp.implementation, opts
+								signatureHelp: -> .set 'n', '<C-k>', vim.lsp.signature_help, opts
+								renameProvider: -> .set 'n', 'gR', vim.lsp.rename, opts
+								referencesProvider: -> .set 'n', 'gr', vim.lsp.references, opts
+							for k, setup in pairs presets
+								capability = client.server_capabilities[k]
+								unless capability?
+									error "no such capability #{capability}"
+								if capability
+									setup!
 
 		-- 'vim-autocomplete/vim-autocomplete': {}
 		'tpope/vim-commentary': {}

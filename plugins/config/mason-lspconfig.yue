@@ -1,0 +1,55 @@
+{ nvim_create_autocmd: autocmd } = vim.api
+
+export name = 'williamboman/mason-lspconfig.nvim'
+export dependencies =
+  * 'williamboman/mason.nvim'
+  * 'neovim/nvim-lspconfig'
+  * 'nvim-telescope/telescope.nvim'
+
+servers =
+  c: 'clangd'
+  go: 'gopls'
+  lua: 'lua_ls'
+  rust: 'rust_analyzer'
+  toml: 'taplo'
+  yaml: 'yamlls'
+  -- markdown:
+
+export ft = [ lang for lang, _ in pairs servers ]
+
+export config = ->
+  import "mason-lspconfig" as :setup
+  setup
+    ensure_installed: [ server for _, server in pairs servers ]
+    automatic_installation: false
+
+  on_attach = (_, _) ->
+    error 'attached!' -- TODO(kcza): get the attach thing to work!
+    with vim.keymap
+      import buf from vim.lsp
+      .set 'n', '<leader>r', buf.rename, desc: 'Rename'
+      .set 'n', '<leader>ca', buf.code_action, desc: 'Code action'
+      .set 'n', '<leader>gd', buf.definition, desc: 'Go to definition'
+      .set 'n', '<leader>gi', buf.implementation, desc: 'Go to implementation'
+      .set 'n', '<leader>gr', (require 'telescope.builtin').lsp_references, desc: 'See references'
+      .set 'n', 'K', buf.hover, desc: 'Hover'
+
+  -- require'lspconfig'.rust_analyzer.setup
+  --   :on_attach
+  --   settings:
+  --     'rust-analyzer':
+  --       imports:
+  --         granularity:
+  --           group: 'module'
+  --       cargo:
+  --         buildScripts:
+  --           enable: true
+  --       procMacro:
+  --         enable: true
+  lspconfig = require 'lspconfig'
+  for lang, server in pairs servers
+    lspconfig[server].setup
+      :on_attach
+      flags:
+        debounce_text_changes: 150
+

@@ -1,0 +1,35 @@
+export name = 'nvim-treesitter/nvim-treesitter'
+export lazy = false
+
+export config = ->
+  import 'nvim-treesitter.configs' as :setup
+  setup
+    ensure_installed:
+      * 'awk'
+      * 'c'
+      * 'css'
+      * 'diff'
+      * 'dot'
+      * 'git_rebase'
+      * 'gitattributes'
+      * 'gitcommit'
+      * 'git_config'
+      * 'gitignore'
+      * 'go'
+      * 'gomod'
+      * 'gosum'
+      * 'html'
+      * 'json'
+      * 'lua'
+      * 'make'
+      * 'markdown'
+      * 'markdown_inline'
+      * 'rust'
+      * 'toml'
+      * 'yaml'
+      * 'starlark'
+      * 'latex'
+    sync_install: false
+    auto_install: true
+    highlight:
+      enable: true

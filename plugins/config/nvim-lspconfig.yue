@@ -1,0 +1,1 @@
+export name = 'neovim/nvim-lspconfig'

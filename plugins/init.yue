@@ -1,4 +1,4 @@
-print 'plugins'
+import 'core.util' as :to_vim_obj
 
 lazypath = vim.fn.stdpath'data' .. '/lazy/lazy.nvim'
 unless vim.loop.fs_stat lazypath
@@ -16,6 +16,67 @@ opts =
     colorscheme:
       * 'habamax'
 
--- import 'lazy' as :setup
--- import 'extensions.list' as :extensions
--- setup list, opts
+plugins =
+  * require 'plugins.config.vim-litecorrect'
+  * require 'plugins.config.vim-textobj-quote'
+  * require 'plugins.config.gruvbox'
+  * require 'plugins.config.nvim-web-devicons'
+  * require 'plugins.config.lualine'
+  * require 'plugins.config.nvim-treesitter'
+  * require 'plugins.config.telescope'
+  * require 'plugins.config.plenary'
+  * require 'plugins.config.mason'
+  * require 'plugins.config.mason-lspconfig'
+  * require 'plugins.config.nvim-lspconfig'
+  * require 'plugins.config.rust-tools'
+  * require 'plugins.config.nvim-cmp'
+
+no_copy = do
+  no_copy_fields =
+    * 'name'
+  { field, true for field in *no_copy_fields }
+lazy_spec = (plugin) ->
+  with {}
+    -- Defaults
+    .lazy = true
+
+    -- Spec fields
+    [1] = plugin.name
+    for k,v in pairs plugin
+      unless no_copy[k]
+        [k] = v
+specs = with {}
+  plugin_map = { plugin.name, plugin for plugin in *plugins }
+
+  loaded = {}
+  stack = {}
+  linearise_plugins = (name) ->
+    return if loaded[name]
+    loaded[name] = true
+
+    for item in *stack
+      if item == name
+        error "dependency cycle: #{to_vim_obj stack}"
+    stack[] = name
+
+    plugin = plugin_map[name]
+    unless plugin?
+      error "unknown plugin #{name}"
+
+    if dependencies = plugin.dependencies
+      if 'table' != type dependencies
+        dependencies = { dependencies }
+      for need in *dependencies
+        linearise_plugins need
+
+    [] = lazy_spec plugin
+
+    stack[#stack] = nil
+
+  for plugin in *plugins
+    linearise_plugins plugin.name
+
+import 'lazy' as :setup
+-- import "core.util" as :show
+-- print show specs
+setup specs, opts

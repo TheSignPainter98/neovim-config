@@ -1,3 +1,27 @@
 with vim.g
   .mapleader = ' '
   .maplocalleader = ' '
+
+with vim.keymap
+  -- General
+  .set {'n', 'v'}, ';', ':'
+  .set 'n', ',', ':noh<cr>'
+
+  -- Tabs
+  .set 'n', 'th', '<cmd>tabp<cr>'
+  .set 'n', 'tl', '<cmd>tabn<cr>'
+
+  -- Terminals
+  .set 'n', '<leader>th', '<cmd>vsplit<cr><cmd>term<cr>i'
+  .set 'n', '<leader>tj', '<cmd>split<cr><cmd>term<cr>i'
+  .set 'n', '<leader>tk', '<cmd>split<cr><cmd>term<cr><C-w>Ki'
+  .set 'n', '<leader>tl', '<cmd>vsplit<cr><cmd>term<cr><C-w>Li'
+
+  -- Reflow
+  .set 'n', '<F4>', 'gggqG'
+  .set 'n', '<F5>', '<cmd>redraw!<cr><cmd>edit %<cr>'
+
+  -- Shell
+  .set 'n', '!', ':!'
+  .set 'n', '<F11>', '<cmd>w<cr><cmd>!!<cr>'
+  .set 'n', '<F12>', '<cmd>!make<cr>'

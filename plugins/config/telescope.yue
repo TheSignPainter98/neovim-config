@@ -1,0 +1,8 @@
+export name = 'nvim-telescope/telescope.nvim'
+export dependencies = 'nvim-lua/plenary.nvim'
+
+export keys =
+  * { '<leader>ff', '<cmd>Telescope find_files<cr>', desc: 'Find files' }
+  * { '<leader>fg', '<cmd>Telescope live_grep<cr>', desc: 'Live grep' }
+  * { '<leader>fb', '<cmd>Telescope buffers<cr>', desc: 'Find buffer' }
+  * { '<leader>fh', '<cmd>Telescope help_tags<cr>', desc: 'Help tags' }

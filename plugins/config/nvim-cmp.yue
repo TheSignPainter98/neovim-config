@@ -1,0 +1,8 @@
+export name = 'hrsh7th/nvim-cmp'
+export lazy = false
+
+export config = ->
+  import 'cmp' as :setup
+  setup
+    sources:
+      name: 'nvim_lsp'

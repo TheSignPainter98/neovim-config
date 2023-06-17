@@ -1,0 +1,34 @@
+with vim.opt
+  -- Whitespace
+  .autoindent = true
+  .smartindent = true
+  .breakindent = true
+  .linebreak = true
+  .shiftwidth = 4
+  .shiftround = true
+  .tabstop = 4
+  .scrolloff = 7
+
+  -- File IO
+  .autoread = true
+  .autowrite = true
+
+  -- Backups
+  .backup = false
+  .writebackup = false
+  .backupdir = vim.fn.expand '~/.vim/tmp/'
+  .directory = vim.fn.expand '~/.vim/tmp/'
+
+  -- Completions
+  .wildmode =
+    * 'longest'
+    * 'list'
+    * 'full'
+  .wildmenu = true
+
+  -- Search
+  .smartcase = true
+
+  -- Misc
+  .ttimeoutlen = 100
+  .splitbelow = true

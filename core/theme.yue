@@ -1,0 +1,10 @@
+with vim.opt
+  -- Appearance
+  .wrap = true
+  .number = true
+  .relativenumber = true
+  .hlsearch = true
+  .showcmd = true
+
+with vim.o
+  .t_ut = ''

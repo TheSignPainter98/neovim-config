@@ -1,0 +1,8 @@
+export servers =
+  c: 'clangd'
+  go: 'gopls'
+  lua: 'lua_ls'
+  rust: 'rust_analyzer'
+  toml: 'taplo'
+  yaml: 'yamlls'
+  -- markdown:

@@ -77,6 +77,4 @@ specs = with {}
     linearise_plugins plugin.name
 
 import 'lazy' as :setup
--- import "core.util" as :show
--- print show specs
 setup specs, opts

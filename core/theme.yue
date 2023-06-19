@@ -1,3 +1,5 @@
+{ nvim_create_autocmd: autocmd } = vim.api
+
 with vim.opt
   -- Appearance
   .wrap = true
@@ -8,3 +10,19 @@ with vim.opt
 
 with vim.o
   .t_ut = ''
+
+for event in *{ 'TermOpen', 'TermEnter' }
+  autocmd event,
+    pattern: '*'
+    callback: ->
+      with vim.opt
+        .number = false
+        .relativenumber = false
+        .wrap = true
+autocmd 'TermLeave',
+  pattern: '*'
+  callback: ->
+    with vim.opt
+      .number = true
+      .relativenumber = true
+      .wrap = true

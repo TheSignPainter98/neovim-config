@@ -4,6 +4,8 @@
 } = vim.api
 
 export name = 'mhartington/formatter.nvim'
+export keys =
+  * { '<F3>', '<cmd>FormatWrite<cr>', desc: 'Auto-format' }
 
 -- TODO: see https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
 formatters =
@@ -24,7 +26,7 @@ export config = ->
 
   with group = autogroup 'autoformat', clear: true
     autocmd 'BufWritePost',
-      pattern: { '*.rs', '*.lua', '*.go' } -- TODO(kcza): filetypes here
+      pattern: '*'
       :group
       callback: ->
         vim.cmd 'FormatWrite'

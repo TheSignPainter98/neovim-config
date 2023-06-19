@@ -16,6 +16,7 @@ with vim.keymap
   .set 'n', '<leader>tj', '<cmd>split<cr><cmd>term<cr>i'
   .set 'n', '<leader>tk', '<cmd>split<cr><cmd>term<cr><C-w>Ki'
   .set 'n', '<leader>tl', '<cmd>vsplit<cr><cmd>term<cr><C-w>Li'
+  .set 't', '<esc><esc>', [[<C-\><C-N>]]
 
   -- Reflow
   .set 'n', '<F4>', 'gggqG'
@@ -26,5 +27,5 @@ with vim.keymap
   .set 'n', '<F11>', '<cmd>w<cr><cmd>!!<cr>'
   .set 'n', '<F12>', '<cmd>!make<cr>'
 
-  -- Terminal
-  .set 't', '<esc><esc>', [[<C-\><C-N>]]
+  -- Yank
+  .set 'n', 'Y', 'yy'

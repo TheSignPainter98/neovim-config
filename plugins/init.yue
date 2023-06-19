@@ -30,6 +30,11 @@ plugins =
   * require 'plugins.config.nvim-lspconfig'
   * require 'plugins.config.rust-tools'
   * require 'plugins.config.nvim-cmp'
+  * require 'plugins.config.cmp-nvim-lsp'
+  * require 'plugins.config.leap'
+  * require 'plugins.config.nvim-comment'
+  * require 'plugins.config.formatter'
+  * require 'plugins.config.yuescript-vim'
 
 no_copy = do
   no_copy_fields =

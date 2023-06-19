@@ -1,0 +1,3 @@
+export name = 'pigpigyyy/yuescript-vim'
+export ft = 'yue'
+export init = ->

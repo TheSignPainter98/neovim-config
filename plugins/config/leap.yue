@@ -1,0 +1,5 @@
+export name = 'ggandor/leap.nvim'
+export lazy = false
+-- export config = ->
+-- 	import 'leap' as :leap
+-- 	leap {}

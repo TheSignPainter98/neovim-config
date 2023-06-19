@@ -1,0 +1,17 @@
+{
+	nvim_create_autocmd: autocmd,
+	nvim_create_augroup: autogroup,
+} = vim.api
+
+export name = 'terrortylor/nvim-comment'
+export lazy = false
+-- TODO(kcza): make this lazy by detecting keystrokes
+
+export config = ->
+  import 'nvim_comment' as :setup
+  setup!
+  with group = autogroup 'AlternativeComment', clear: true
+    autocmd 'BufEnter',
+      pattern: { '*.c', '*.cpp', '*.h' }
+      callback: ->
+        vim.api.nvim_buf_set_option(0, "commentstring", '// %s')

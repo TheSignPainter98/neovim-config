@@ -11,9 +11,6 @@ export ft =
     * 'gitcommit'
 
 export config = ->
-  import 'vim-textobj-quote' as :setup
-  setup!
-
   with group = autogroup 'textobj_quote', clear: true
     for pattern in *ft
       autocmd 'FileType',

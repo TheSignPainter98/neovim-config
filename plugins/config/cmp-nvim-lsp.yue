@@ -1,0 +1,6 @@
+export name = 'hrsh7th/cmp-nvim-lsp'
+export dependencies = 'hrsh7th/nvim-cmp'
+export config = ->
+	import 'cmp_nvim_lsp' as :setup
+	setup!
+

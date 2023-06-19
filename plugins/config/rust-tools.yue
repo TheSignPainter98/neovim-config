@@ -3,12 +3,12 @@ export ft = 'rust'
 export dependencies =
   * 'neovim/nvim-lspconfig'
   * 'williamboman/mason-lspconfig.nvim'
-  * 'hrsh7th/nvim-cmp'
+  * 'hrsh7th/cmp-nvim-lsp'
 
 export config = ->
   import "rust-tools" as :setup, :hover_actions, :code_action_group
   setup
-    -- capabilities: (require 'cmp_nvim_lsp').default_capabilities! -- TODO: fixme!
+    capabilities: (require 'cmp_nvim_lsp').default_capabilities!
     on_attach: (_, buffer) ->
 	  error 'asdf'
       with vim.keymap

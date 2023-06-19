@@ -4,34 +4,27 @@
 } = vim.api
 
 export name = 'mhartington/formatter.nvim'
-export lazy = false
 
 -- TODO: see https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
+formatters =
+  lua: -> (require 'formatter.filetypes.lua').stylua
+  rust: -> (require 'formatter.filetypes.rust').rustfmt
+  go: -> (require 'formatter.filetypes.go').gofmt
+export ft = [ k for k, _ in pairs formatters ]
 
 export config = ->
   import 'formatter' as :setup
   setup
-    filetype:
-      lua: (require 'formatter.filetypes.lua').stylua
-      rust: (require 'formatter.filetypes.rust').rustfmt
-      go: (require 'formatter.filetypes.go').gofmt
-        -- import 'formatter.util'
-        -- -> {
-        --   exe: 'stylua'
-        --   args:
-        --     * '--search-parent-directories'
-        --     * '--stdin-filepath'
-        --     * util.escape_path util.get_current_buffer_file_path!
-        --     * '--'
-        --     * '-'
-        --   stdin: true
-        -- }
-      ['*']:
-        * (require 'formatter.filetypes.any').remove_trailing_whitespace
+    filetype: with { lang, config! for lang, config in pairs formatters }
+        ['*'] = (require 'formatter.filetypes.any').remove_trailing_whitespace
+
+  with vim.keymap
+    import 'formatter.format' as :format
+    .set 'n', '<F3>', '<cmd>FormatWrite<cr>'
 
   with group = autogroup 'autoformat', clear: true
     autocmd 'BufWritePost',
-      pattern: { '*.rs', '*.lua', '*.go' }
+      pattern: { '*.rs', '*.lua', '*.go' } -- TODO(kcza): filetypes here
       :group
       callback: ->
         vim.cmd 'FormatWrite'

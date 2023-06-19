@@ -5,10 +5,13 @@
 
 export name = 'reedes/vim-textobj-quote'
 export ft =
-    * 'markdown'
-    * 'text'
-    * 'mail'
-    * 'gitcommit'
+  * 'markdown'
+  * 'text'
+  * 'mail'
+  * 'gitcommit'
+export dependencies = 'kana/vim-textobj-user'
+
+export init = ->
 
 export config = ->
   with group = autogroup 'textobj_quote', clear: true

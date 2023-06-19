@@ -20,10 +20,6 @@ export config = ->
     filetype: with { lang, config! for lang, config in pairs formatters }
         ['*'] = (require 'formatter.filetypes.any').remove_trailing_whitespace
 
-  with vim.keymap
-    import 'formatter.format' as :format
-    .set 'n', '<F3>', '<cmd>FormatWrite<cr>'
-
   with group = autogroup 'autoformat', clear: true
     autocmd 'BufWritePost',
       pattern: '*'

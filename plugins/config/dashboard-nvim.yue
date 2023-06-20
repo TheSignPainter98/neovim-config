@@ -1,0 +1,8 @@
+export name = 'glepnir/dashboard-nvim'
+export event = 'VimEnter'
+export dependencies = 'nvim-tree/nvim-web-devicons'
+
+export config = ->
+  import 'dashboard' as :setup
+  setup
+    theme: 'hyper'

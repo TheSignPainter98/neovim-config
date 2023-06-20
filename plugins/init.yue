@@ -38,6 +38,7 @@ plugins =
   * require 'plugins.config.yuescript-vim'
   * require 'plugins.config.vgit'
   * require 'plugins.config.nvim-autopairs'
+  * require 'plugins.config.indentmini'
 
 no_copy = do
   no_copy_fields =

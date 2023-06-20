@@ -1,0 +1,6 @@
+export name = 'nvimdev/indentmini.nvim'
+export event = 'BufEnter'
+
+export config = ->
+  import 'indentmini' as :setup
+  setup!

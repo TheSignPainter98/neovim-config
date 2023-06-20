@@ -6,3 +6,6 @@ export config = ->
   import 'dashboard' as :setup
   setup
     theme: 'hyper'
+    config:
+      week_header:
+        enable: true

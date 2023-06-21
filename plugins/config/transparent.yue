@@ -1,0 +1,7 @@
+export name = 'xiyaowong/transparent.nvim'
+export lazy = false
+
+export config = ->
+  import 'transparent' as :setup, :toggle
+  setup!
+  toggle true

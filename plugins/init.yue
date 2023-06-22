@@ -42,6 +42,7 @@ plugins =
   * require 'plugins.config.dashboard-nvim'
   * require 'plugins.config.transparent'
   * require 'plugins.config.emblem'
+  * require 'plugins.config.playground'
 
 no_copy = do
   no_copy_fields =

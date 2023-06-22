@@ -28,22 +28,22 @@ on_ft =
   'mail': set_spell
   'gitcommit': set_spell
   'yue': ->
-    with vim.opt
+    with vim.opt_local
       .expandtab = true
       .shiftwidth = 2
       .tabstop = 2
   'yaml': ->
-    with vim.opt
+    with vim.opt_local
       .expandtab = true
       .shiftwidth = 2
       .tabstop = 2
   'haskell': ->
-    with vim.opt
+    with vim.opt_local
       .expandtab = true
       .shiftwidth = 4
       .tabstop = 4
   'c': ->
-    with vim.opt
+    with vim.opt_local
       .cindent = true
 for pattern, callback in pairs on_ft
   autocmd 'FileType',

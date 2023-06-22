@@ -1,7 +1,16 @@
 export name = 'xiyaowong/transparent.nvim'
 export lazy = false
+export dependencies =
+  * 'tanvirtin/vgit.nvim'
 
 export config = ->
   import 'transparent' as :setup, :toggle
-  setup!
+
+  setup
+    extra_groups:
+      * 'GitSignsAdd'
+      * 'GitSignsAddLn'
+      * 'GitSignsChange'
+      * 'GitSignsDelete'
+      * 'GitSignsDeleteLn'
   toggle true

@@ -8,6 +8,8 @@ with vim.opt
   .hlsearch = true
   .showcmd = true
 
+  .cursorcolumn = true
+
 with vim.o
   .t_ut = ''
 

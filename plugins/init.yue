@@ -41,6 +41,7 @@ plugins =
   * require 'plugins.config.indentmini'
   * require 'plugins.config.dashboard-nvim'
   * require 'plugins.config.transparent'
+  * require 'plugins.config.emblem'
 
 no_copy = do
   no_copy_fields =

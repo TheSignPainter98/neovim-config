@@ -13,4 +13,5 @@ export config = ->
       * 'GitSignsChange'
       * 'GitSignsDelete'
       * 'GitSignsDeleteLn'
+      * 'VertSplit'
   toggle true

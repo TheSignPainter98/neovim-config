@@ -11,6 +11,12 @@ with vim.keymap
   .set 'n', 'th', '<cmd>tabp<cr>'
   .set 'n', 'tl', '<cmd>tabn<cr>'
 
+  -- New splits
+  .set 'n', '<leader>wh', '<cmd>vsplit<cr><cmd>Telescope find_files<cr>'
+  .set 'n', '<leader>wj', '<cmd>split<cr><C-w>j<cmd>Telescope find_files<cr>'
+  .set 'n', '<leader>wk', '<cmd>split<cr><cmd>Telescope find_files<cr>'
+  .set 'n', '<leader>wl', '<cmd>vsplit<cr><C-w>l<cmd>Telescope find_files<cr>'
+
   -- Moving around splits
   .set 'n', '<C-h>', '<C-w>h'
   .set 'n', '<C-j>', '<C-w>j'

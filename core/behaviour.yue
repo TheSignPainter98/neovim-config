@@ -33,4 +33,3 @@ with vim.opt
 
   -- Misc
   .ttimeoutlen = 100
-  .splitbelow = true

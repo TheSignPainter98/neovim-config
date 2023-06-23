@@ -34,6 +34,8 @@ export config = ->
     highlight:
       enable: true
 
+  import concat from table
+  import jobstart from vim.fn
   import get_parser, get_node_text from vim.treesitter
   import parse from vim.treesitter.query
   import nvim_get_current_buf, nvim_buf_set_lines, nvim_buf_get_lines, nvim_create_user_command from vim.api
@@ -63,18 +65,28 @@ export config = ->
     for line in *lines[2,#lines-1]
       if (line\match '[^ \t]') and not line\match "^#{indent}"
         return nil, "inconsistent indents: '#{indent}', '#{line}'"
-    if #lines <= 1
-      print indent, #indent, lines[1], (lines[1] or '')\sub #indent + 1
     lines = [ line\sub #indent + 1 for line in *lines ]
 
-    -- Run the formatter here!
+    tmpfile = '/tmp/nvim-tmp.txt'
+    with io.open tmpfile, 'w'
+      \write concat lines, '\n'
+      \close!
+    lines = with {}
+      -- sudo snap install black
+      handle = io.popen "cat #{tmpfile} | black -q -"
+      line = handle\read '*l'
+      while line
+        [] = line
+        line = handle\read '*l'
+      handle\close!
+    os.execute "rm -f #{tmpfile}"
 
-    vim.print lines
     formatted = with {}
-      [] = lines[1]
-      for line in *lines[2,]
+      if #lines > 1
+        [] = ''
+      for line in *lines
         unless line\match '^[ \t]*$'
-          [] = "\t#{line}"
+          [] = "    #{line}"
         else
           [] = ""
     formatted, nil
@@ -105,22 +117,22 @@ export config = ->
           if err
             error err
           if #formatted == 0
-            return formatted, nil
-          for i, line in pairs formatted
-            formatted[i] = indentation .. line
-          formatted[1] = "#{indentation}st.RunString(`#{formatted[1]}"
-
-          print #formatted, #raw
-          vim.print formatted, raw
-
-          assert(#formatted != 1 or #formatted == #raw, 'single-line reformatted to multiple, help!')
-
-          if #formatted == 1
-            assert(start_row == end_row)
-            { src } = nvim_buf_get_lines bufnr, change.start_row, change.end_row, false
-
-            formatted[1] = "<#{src\sub 1, start_col}|#{formatted[1]}|#{src\sub end_col}>"
-            error formatted[1]
+            continue
+          formatted = with {}
+            for i = 1, #formatted
+              line = formatted[i]
+              if i == 1
+                { raw } = nvim_buf_get_lines bufnr, start_row, start_row+1, false
+                line = (raw\sub 1, start_col) .. '`' .. line
+              if #formatted == 1
+                { raw } = nvim_buf_get_lines bufnr, end_row, end_row+1, false
+                if raw
+                  line ..= raw\sub end_col
+              if i > 1 and #formatted > 1
+                indent = line\match '^( *)'
+                new_indent = indentation .. indent\gsub '    ', '\t'
+                line = new_indent .. line\sub #indent + 1
+              [] = line
 
           [] =
             :start_row

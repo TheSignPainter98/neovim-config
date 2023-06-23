@@ -55,5 +55,5 @@ repr = (permissive) =>
               build_repr v
             [] = ' }'
         else
-          print "unknown type #{type @} of: #{@}"
+          error "unknown type #{type @} of: #{@}"
     build_repr @

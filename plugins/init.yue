@@ -43,6 +43,7 @@ plugins =
   * require 'plugins.config.transparent'
   * require 'plugins.config.emblem'
   * require 'plugins.config.playground'
+  * require 'plugins.config.treesj'
 
 no_copy = do
   no_copy_fields =

@@ -33,7 +33,6 @@ plugins =
   * require 'plugins.config.nvim-cmp'
   * require 'plugins.config.cmp-nvim-lsp'
   * require 'plugins.config.leap'
-  * require 'plugins.config.nvim-comment'
   * require 'plugins.config.formatter'
   * require 'plugins.config.yuescript-vim'
   * require 'plugins.config.vgit'
@@ -45,6 +44,7 @@ plugins =
   * require 'plugins.config.playground'
   * require 'plugins.config.treesj'
   * require 'plugins.config.nvim-surround'
+  * require 'plugins.config.comment'
 
 no_copy = do
   no_copy_fields =

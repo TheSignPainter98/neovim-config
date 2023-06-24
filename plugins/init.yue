@@ -44,6 +44,7 @@ plugins =
   * require 'plugins.config.emblem'
   * require 'plugins.config.playground'
   * require 'plugins.config.treesj'
+  * require 'plugins.config.nvim-surround'
 
 no_copy = do
   no_copy_fields =

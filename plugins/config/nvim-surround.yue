@@ -1,0 +1,7 @@
+export name = 'kylechui/nvim-surround'
+export dependencies = 'nvim-treesitter/nvim-treesitter'
+export event = 'VeryLazy'
+
+export config = ->
+  import 'nvim-surround' as :setup
+  setup {}

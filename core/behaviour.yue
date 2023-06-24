@@ -33,3 +33,4 @@ with vim.opt
 
   -- Misc
   .ttimeoutlen = 100
+  .updatetime = 1000

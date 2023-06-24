@@ -1,5 +1,6 @@
 export name = 'nvim-telescope/telescope.nvim'
 export dependencies = 'nvim-lua/plenary.nvim'
+-- Requires fd and rg
 
 export keys =
   * { '<leader>ff', '<cmd>Telescope find_files<cr>', desc: 'Find files' }

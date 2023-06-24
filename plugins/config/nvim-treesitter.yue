@@ -26,6 +26,7 @@ export config = ->
       * 'make'
       * 'markdown'
       * 'markdown_inline'
+      * 'python'
       * 'rust'
       * 'starlark'
       * 'toml'

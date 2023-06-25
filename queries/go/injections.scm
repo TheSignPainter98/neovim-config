@@ -1,3 +1,4 @@
+; Embedded starlark
 (call_expression
 	function: (selector_expression
 		operand: (identifier) @_id (#eq? @_id "st")

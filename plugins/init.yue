@@ -1,5 +1,8 @@
 import 'core.util' as :to_vim_obj
 
+HOME = assert os.getenv 'HOME'
+package.path ..= ";#{HOME}/.config/nvim/plugins/local/?.lua;#{HOME}/.config/nvim/plugins/local/?/init.lua;"
+
 lazypath = vim.fn.stdpath'data' .. '/lazy/lazy.nvim'
 unless vim.loop.fs_stat lazypath
   vim.fn.system
@@ -48,6 +51,7 @@ plugins =
   * require 'plugins.config.nvim-ts-context-commentstring'
   * require 'plugins.config.todo-comments'
   * require 'plugins.config.trouble'
+  * require 'plugins.config.bins'
 
 no_copy = do
   no_copy_fields =

@@ -1,0 +1,88 @@
+{ :nvim_create_user_command } = vim.api
+import 'bins.builtin' as :BUILTIN
+import sort from table
+import 'plenary.async' as :run
+
+local *
+
+setup_done = false
+export setup = (setup={}) ->
+  if setup_done
+    return
+  setup_done = true
+
+  {
+    :create_commands = true
+  } = setup
+
+  if create_commands
+    nvim_create_user_command 'InstallMissing', (-> install!), {}
+
+  for spec in *BUILTIN
+    declare spec
+
+required_fields =
+  bin: 'string'
+  name: 'string'
+  install: 'table'
+  env: 'table?'
+
+known_binaries = {}
+export declare = (spec) ->
+  with spec
+    .name ??= .bin
+    if 'string' == type .install
+      if .install\match ' '
+        error "Install command for #{.name} contains spaces: '#{.install}'"
+      .install = { .install }
+
+  check spec
+  known_binaries[spec.bin] = spec
+
+needed_binaries = {}
+needed_binaries_map = {}
+export need = (bin) ->
+  unless known_binaries[bin]
+    error "Unknown binary #{bin}, is there a typo or a missing declaration?"
+
+  if needed_binaries_map[bin]
+    return
+  needed_binaries_map[bin] = true
+
+  needed_binaries[] = bin
+
+export install = ->
+  if #needed_binaries > 0
+    vim.notify "Installing binaries [0/#{#needed_binaries}]"
+  else
+    vim.notify 'Nothing to install...'
+
+  installed = 0
+  for bin in *needed_binaries
+    with known_binaries[bin]
+      run unpack
+        * -> os.execute table.concat .install, ' '
+        * ->
+            installed += 1
+            vim.notify "Installed #{.name} [#{installed}/#{#needed_binaries}]"
+
+      -- j = job\new
+      --   command: .install[1]
+      --   args: [ a for a in *.install[2,] ]
+      --   env: .env
+      -- j\sync!
+
+check = (decl) ->
+  with required_fields
+    for k,v in pairs decl
+      assert [k], "Unrecognised field .#{k}, expected one of #{vim.inspect [ k for k in pairs required_fields]}"
+      expected = [k]\match '^[^?]*'
+      assert expected == (type v), "Incorrect type for .#{k}: expected #{expected} but got #{type v} (#{v})"
+  with decl
+    for k,t in pairs required_fields
+      expected = t\match '^[^?]*'
+      optional = #t != #expected
+      unless optional and [k] == nil
+        assert expected == (type [k]), "Incorrect type for .#{k}: expected #{expected} but got #{type [k]} (#{[k]})"
+
+    assert #.install >= 1, "Install command too short! (#{#.install} entries)"

@@ -1,0 +1,13 @@
+export BUILTIN =
+  * name: 'Ripgrep'
+    bin: 'rg'
+    install:
+      * 'cargo'
+      * 'install'
+      * 'ripgrep'
+  * name: 'fd-find'
+    bin: 'fd'
+    install:
+      * 'cargo'
+      * 'install'
+      * 'fd-find'

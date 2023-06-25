@@ -1,9 +1,12 @@
-{ :nvim_create_user_command } = vim.api
-
 export name = 'TheSignPainter98/nvim-bins'
 export dir = '~/.config/nvim/plugins/local/bins/'
 export cmd = 'InstallMissing'
 export dependencies = 'nvim-lua/plenary.nvim'
+export dev = true
+
+export init = ->
+  import 'bins' as :init
+  init!
 
 export config = ->
   import 'bins' as :setup

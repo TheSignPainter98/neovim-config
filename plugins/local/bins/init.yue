@@ -5,6 +5,11 @@ import 'plenary.async' as :run
 
 local *
 
+export init = ->
+  error 'inited!'
+  for spec in *BUILTIN
+    declare spec
+
 setup_done = false
 export setup = (setup={}) ->
   if setup_done
@@ -17,9 +22,6 @@ export setup = (setup={}) ->
 
   if create_commands
     nvim_create_user_command 'InstallMissing', (-> install!), {}
-
-  for spec in *BUILTIN
-    declare spec
 
 required_fields =
   bin: 'string'

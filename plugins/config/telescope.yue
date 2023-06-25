@@ -1,6 +1,7 @@
 export name = 'nvim-telescope/telescope.nvim'
-export dependencies = 'nvim-lua/plenary.nvim'
--- Requires fd and rg
+export dependencies =
+  * 'nvim-lua/plenary.nvim'
+  * 'TheSignPainter98/nvim-bins' -- FIXME: This searches github for the dependency, not the local dir
 
 export keys =
   * { '<leader>ff', '<cmd>Telescope find_files<cr>', desc: 'Find files' }
@@ -9,3 +10,12 @@ export keys =
   * { '<leader>fb', '<cmd>Telescope buffers<cr>', desc: 'Find buffer' }
   * { '<leader>fk', '<cmd>Telescope keymaps<cr>', desc: 'Find keymap' }
   * { '<leader>fh', '<cmd>Telescope help_tags<cr>', desc: 'Find help tags' }
+
+export init = ->
+  import 'bins' as :need
+  need 'rg'
+  need 'fd'
+
+export config = ->
+  import 'telescope' as :setup
+  setup!

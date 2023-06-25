@@ -1,0 +1,6 @@
+export name = 'folke/trouble.nvim'
+export dependencies = 'nvim-tree/nvim-web-devicons'
+
+export keys =
+  * { '<leader>tr', '<cmd>Trouble<cr>', mode: 'n', desc: 'Show trouble' }
+  * { '<leader>tR', '<cmd>TroubleRefresh<cr>', mode: 'n', desc: 'Refresh trouble' }

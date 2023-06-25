@@ -25,6 +25,7 @@
   "todo-comments.nvim": { "branch": "main", "commit": "09b0b17d824d2d56f02ff15967e8a2499a89c731" },
   "transparent.nvim": { "branch": "main", "commit": "f09966923f7e329ceda9d90fe0b7e8042b6bdf31" },
   "treesj": { "branch": "main", "commit": "b1e2976c2d7ba922371cc7f3ab08b75136c27231" },
+  "trouble.nvim": { "branch": "main", "commit": "d99e2abd10808ef91738ce98a5c767e6a51df449" },
   "vgit.nvim": { "branch": "main", "commit": "a62ad74471b3612de68a5e78a893b867eb33332e" },
   "vim-litecorrect": { "branch": "master", "commit": "a914b1240c2ad35f9a11c0211c15b9199a9af73a" },
   "vim-textobj-quote": { "branch": "master", "commit": "7ce5b324ebd21f3bc98ec11e534ed4e9677834c9" },

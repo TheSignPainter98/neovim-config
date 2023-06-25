@@ -47,6 +47,7 @@ plugins =
   * require 'plugins.config.comment'
   * require 'plugins.config.nvim-ts-context-commentstring'
   * require 'plugins.config.todo-comments'
+  * require 'plugins.config.trouble'
 
 no_copy = do
   no_copy_fields =

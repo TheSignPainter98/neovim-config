@@ -2,6 +2,7 @@ export name = 'folke/todo-comments.nvim'
 export dependencies =
   * 'nvim-lua/plenary.nvim'
   * 'nvim-telescope/telescope.nvim'
+  * 'folke/trouble.nvim'
 export lazy = false
 
 local jump_next, jump_prev
@@ -18,6 +19,10 @@ keymaps =
     mode: 'n'
     desc: 'Find all todos'
     callback: '<cmd>Telescope todo-comments todo<cr>'
+  * keys: '<leader>tt'
+    mode: 'n'
+    desc: 'Show todos in trouble'
+    callback: '<cmd>TodoTrouble<cr>'
 
 export keys = [ { k.keys, desc: k.desc } for k in *keymaps ]
 

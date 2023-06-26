@@ -1,5 +1,7 @@
 vim.cmd 'packadd termdebug'
 
+math.randomseed os.time!
+
 with vim.opt
   -- Whitespace
   .autoindent = true

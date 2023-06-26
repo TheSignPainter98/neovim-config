@@ -4,25 +4,16 @@ export dependencies =
   * 'nvim-tree/nvim-web-devicons'
   * 'nvim-telescope/telescope.nvim'
 
--- Put banners here, use img2braille to make them pretty
--- Make them 20 lines high
-BANNER_EXT = 'txt'
-BANNER_GLOB = "~/.config/nvim/banners/*.#{BANNER_EXT}"
-
 export config = ->
   import 'dashboard' as :setup
-  import split from vim
-  import glob from vim.fn
+  import 'core.banners' as :BANNERS
 
-  banner = do
-    paths = split (glob BANNER_GLOB), '\n'
-    paths[math.random #paths]
-  banner_name = banner\match "([^/.]*)%.#{BANNER_EXT}$"
+  banner_name, banner = next BANNERS
   setup
     theme: 'hyper'
     shortcut_type: 'number'
     config:
-      header: with [ line for line in io.lines banner ]
+      header: with banner
           [] = ''
       shortcut:
         * desc: "#{banner_name} does not approve of this message."

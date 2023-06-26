@@ -5,7 +5,7 @@ export dependencies =
   * 'nvim-telescope/telescope.nvim'
 
 -- Put banners here, use img2braille to make them pretty
--- Make them 22 lines high
+-- Make them 20 lines high
 BANNER_EXT = 'txt'
 BANNER_GLOB = "~/.config/nvim/banners/*.#{BANNER_EXT}"
 

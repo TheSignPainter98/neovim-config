@@ -1,21 +1,5 @@
 import 'core.util' as :to_vim_obj
 
-lazypath = vim.fn.stdpath'data' .. '/lazy/lazy.nvim'
-unless vim.loop.fs_stat lazypath
-  vim.fn.system
-    * 'git'
-    * 'clone'
-    * '--filter=blob:none'
-    * 'https://github.com/folke/lazy.nvim.git'
-    * '--branch=stable'
-    * lazypath
-vim.opt.rtp\prepend lazypath
-
-opts =
-  install:
-    colorscheme:
-      * 'habamax'
-
 plugins =
   * require 'plugins.config.vim-litecorrect'
   * require 'plugins.config.vim-textobj-quote'
@@ -96,5 +80,19 @@ specs = with {}
   for plugin in *plugins
     linearise_plugins plugin.name
 
+lazypath = vim.fn.stdpath'data' .. '/lazy/lazy.nvim'
+unless vim.loop.fs_stat lazypath
+  vim.fn.system
+    * 'git'
+    * 'clone'
+    * '--filter=blob:none'
+    * 'https://github.com/folke/lazy.nvim.git'
+    * '--branch=stable'
+    * lazypath
+vim.opt.rtp\prepend lazypath
+
 import 'lazy' as :setup
-setup specs, opts
+setup specs,
+  install:
+    colorscheme:
+      * 'habamax'

@@ -10,11 +10,10 @@ export config = ->
   setup
     capabilities: (require 'cmp_nvim_lsp').default_capabilities!
     on_attach: (_, buffer) ->
-	  error 'asdf'
+      error 'asdf'
       with vim.keymap
         .set 'n', '<C-space>', hover_actions.hover_actions, :buffer
         .set 'n', '<leader>a', code_action_group.code_action_group, :buffer
     tools:
       hover_actions:
         auto_focus: true
-

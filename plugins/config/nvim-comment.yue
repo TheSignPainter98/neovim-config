@@ -1,6 +1,6 @@
 {
-	nvim_create_autocmd: autocmd,
-	nvim_create_augroup: autogroup,
+  nvim_create_autocmd: autocmd,
+  nvim_create_augroup: autogroup,
 } = vim.api
 
 export name = 'terrortylor/nvim-comment'

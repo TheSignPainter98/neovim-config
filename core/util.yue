@@ -3,13 +3,13 @@ local *
 import concat from table
 
 export is_list = =>
-	maxk = -1
-	for k in pairs @
-		if 'number' != type k
-			return false
-		if maxk < k
-			maxk = k
-	maxk == #@
+  maxk = -1
+  for k in pairs @
+    if 'number' != type k
+      return false
+    if maxk < k
+      maxk = k
+  maxk == #@
 
 export show = => repr @, true
 export to_vim_obj = => repr @, false

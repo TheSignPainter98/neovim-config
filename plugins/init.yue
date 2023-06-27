@@ -16,6 +16,9 @@ plugins =
   * require 'plugins.config.rust-tools'
   * require 'plugins.config.nvim-cmp'
   * require 'plugins.config.cmp-nvim-lsp'
+  * require 'plugins.config.cmp-buffer'
+  * require 'plugins.config.cmp-path'
+  * require 'plugins.config.cmp-cmdline'
   * require 'plugins.config.leap'
   * require 'plugins.config.formatter'
   * require 'plugins.config.yuescript-vim'
@@ -34,6 +37,7 @@ plugins =
   * require 'plugins.config.trouble'
   * require 'plugins.config.gh'
   * require 'plugins.config.litee'
+  * require 'plugins.config.luasnip'
 
 no_copy = do
   no_copy_fields =

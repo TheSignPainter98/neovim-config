@@ -7,6 +7,9 @@ export dependencies =
   * 'williamboman/mason-lspconfig.nvim'
 
 export config = ->
+  import 'lspconfig'
+  import 'cmp_nvim_lsp' as :default_capabilities
+
   on_attach = (_, _) ->
     error 'attached!' -- TODO(kcza): get the attach thing to work!
     with vim.keymap
@@ -18,12 +21,13 @@ export config = ->
       .set 'n', '<leader>gr', (require 'telescope.builtin').lsp_references, desc: 'See references'
       .set 'n', 'K', buf.hover, desc: 'Hover'
 
-  lspconfig = require 'lspconfig'
+  capabilities = default_capabilities!
   for lang, server in pairs servers
     lspconfig[server].setup
+      :capabilities
       :on_attach
-      flags:
-        debounce_text_changes: 150
+      -- flags:
+      --   debounce_text_changes: 150
 
   -- require'lspconfig'.rust_analyzer.setup
   --   :on_attach

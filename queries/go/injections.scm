@@ -5,7 +5,6 @@
 		field: (field_identifier) @_field (#eq? @_field "RunString")
 	)
 	arguments: (argument_list
-		(raw_string_literal) @python
-		; (#offset! @python 1 0 -1 0)
+		(raw_string_literal) @python (#offset! @python 1 0 -1 0)
 	)
 )

@@ -1,5 +1,5 @@
 export name = 'tanvirtin/vgit.nvim'
-export lazy = false
+export event = 'BufEnter'
 export dependencies =
   * 'nvim-lua/plenary.nvim'
   * 'nvim-tree/nvim-web-devicons'

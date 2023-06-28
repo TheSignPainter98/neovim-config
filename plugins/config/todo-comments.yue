@@ -1,9 +1,9 @@
 export name = 'folke/todo-comments.nvim'
+export event = 'BufEnter'
 export dependencies =
   * 'nvim-lua/plenary.nvim'
   * 'nvim-telescope/telescope.nvim'
   * 'folke/trouble.nvim'
-export lazy = false
 
 local jump_next, jump_prev
 keymaps =

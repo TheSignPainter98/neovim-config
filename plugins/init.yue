@@ -1,5 +1,10 @@
 import 'core.util' as :to_vim_obj
 
+package.path ..= do
+  HOME = os.getenv('HOME') ?? error 'no home!'
+  ";#{HOME}/.config/nvim/plugins/local/?.lua" ..
+    ";#{HOME}/.config/nvim/plugins/local/?/init.lua"
+
 plugins =
   * require 'plugins.config.vim-litecorrect'
   * require 'plugins.config.vim-textobj-quote'
@@ -25,7 +30,6 @@ plugins =
   * require 'plugins.config.vgit'
   * require 'plugins.config.nvim-autopairs'
   * require 'plugins.config.indentmini'
-  * require 'plugins.config.dashboard-nvim'
   * require 'plugins.config.transparent'
   * require 'plugins.config.emblem'
   * require 'plugins.config.playground'
@@ -39,6 +43,7 @@ plugins =
   * require 'plugins.config.litee'
   * require 'plugins.config.luasnip'
   * require 'plugins.config.oil'
+  * require 'plugins.config.udash'
 
 no_copy = do
   no_copy_fields =

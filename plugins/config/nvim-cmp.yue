@@ -5,6 +5,7 @@ export dependencies =
   * 'hrsh7th/cmp-cmdline'
   * 'hrsh7th/cmp-nvim-lsp'
   * 'hrsh7th/cmp-path'
+  * 'lukas-reineke/cmp-under-comparator'
 export lazy = false
 
 export config = ->
@@ -28,6 +29,17 @@ export config = ->
       }, {
         { name: 'buffer' }
       }
+      sorting:
+        comparators:
+          * .config.compare.offset
+          * .config.compare.exact
+          * .config.compare.score
+          * .config.compare.recently_used
+          * (require 'cmp-under-comparator').under
+          * .config.compare.kind
+          -- * .config.compare.sort_text
+          -- * .config.compare.length
+          -- * .config.compare.order
 
     -- TODO(kcza): check out petertriho/cmp-git for git completions!
     -- .setup.filetype 'gitcommit',

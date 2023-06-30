@@ -6,6 +6,7 @@
 fts =
   'clang-format': 'yaml'
   cls: 'tex'
+  lalrpop: 'lalrpop'
   latexindent: 'yaml'
   wxs: 'xml'
   x: 'lex'

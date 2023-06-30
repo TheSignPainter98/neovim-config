@@ -21,6 +21,7 @@ export config = ->
       * 'gosum'
       * 'html'
       * 'json'
+      * 'lalrpop'
       * 'latex'
       * 'lua'
       * 'make'

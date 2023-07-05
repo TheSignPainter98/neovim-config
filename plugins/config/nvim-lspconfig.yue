@@ -30,16 +30,3 @@ export config = ->
         :settings
       -- flags:
       --   debounce_text_changes: 150
-
-  -- require'lspconfig'.rust_analyzer.setup
-  --   :on_attach
-  --   settings:
-  --     'rust-analyzer':
-  --       imports:
-  --         granularity:
-  --           group: 'module'
-  --       cargo:
-  --         buildScripts:
-  --           enable: true
-  --       procMacro:
-  --         enable: true

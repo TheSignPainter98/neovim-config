@@ -1,8 +1,8 @@
 export name = 'TheSignPainter98/udash'
-export event = 'VimEnter'
 export dir = do
   HOME = os.getenv('HOME') ?? error 'no home!'
   ";#{HOME}/.config/nvim/plugins/local/udash/"
+export cmd = 'Udash'
 
 export config = ->
   import 'udash' as :setup, :udash

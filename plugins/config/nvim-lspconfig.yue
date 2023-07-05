@@ -23,9 +23,11 @@ export config = ->
 
   capabilities = default_capabilities!
   for lang, server in pairs servers
-    lspconfig[server].setup
-      :capabilities
-      :on_attach
+      { :name, :capabilities=capabilities, :on_attach=on_attach, :settings={} } = server
+      lspconfig[name].setup
+        :capabilities
+        :on_attach
+        :settings
       -- flags:
       --   debounce_text_changes: 150
 

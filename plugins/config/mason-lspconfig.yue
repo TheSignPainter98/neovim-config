@@ -10,5 +10,5 @@ export dependencies =
 export config = ->
   import "mason-lspconfig" as :setup
   setup
-    ensure_installed: [ server for _, server in pairs servers ]
+    ensure_installed: [ server.name for _, server in pairs servers ]
     automatic_installation: false

@@ -10,6 +10,7 @@
   "formatter.nvim": { "branch": "master", "commit": "fa4f2729cc2909db599169f22d8e55632d4c8d59" },
   "gh.nvim": { "branch": "main", "commit": "2b5551656c1b896bf4ae06546eaaab00311f9a18" },
   "gruvbox.nvim": { "branch": "main", "commit": "df149bccb19a02c5c2b9fa6ec0716f0c0487feb0" },
+  "highlight-undo.nvim": { "branch": "main", "commit": "1aeada51fb956f1ef121f29ddbb2ef6108a3c480" },
   "indentmini.nvim": { "branch": "main", "commit": "6615c19d5221576e39c030cfe60cb4ce3ca4be65" },
   "lazy.nvim": { "branch": "main", "commit": "b7043f2983d7aead78ca902f3f2053907081859a" },
   "leap.nvim": { "branch": "main", "commit": "3cc0e6a0b99dc18d4e5a88baa3cbe3c7b8b34566" },

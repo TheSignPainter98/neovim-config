@@ -10,6 +10,7 @@ fts =
   latexindent: 'yaml'
   wxs: 'xml'
   x: 'lex'
+  zshrc: 'zsh'
 for ext,ft in pairs fts
   autocmd { 'BufNewFile', 'BufRead' },
     pattern: "*.#{ext}"

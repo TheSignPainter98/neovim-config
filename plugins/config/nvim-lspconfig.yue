@@ -11,7 +11,7 @@ export config = ->
   import 'cmp_nvim_lsp' as :default_capabilities
 
   on_attach = (_, _) ->
-    error 'attached!' -- TODO(kcza): get the attach thing to work!
+    vim.notify "Attached in #{$FILE}"
     with vim.keymap
       import buf from vim.lsp
       .set 'n', '<leader>r', buf.rename, desc: 'Rename'

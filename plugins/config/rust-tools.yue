@@ -10,7 +10,7 @@ export config = ->
   setup
     capabilities: (require 'cmp_nvim_lsp').default_capabilities!
     on_attach: (_, buffer) ->
-      error 'asdf'
+      vim.notify "Attached in #{$FILE}"
       with vim.keymap
         .set 'n', '<C-space>', hover_actions.hover_actions, :buffer
         .set 'n', '<leader>a', code_action_group.code_action_group, :buffer

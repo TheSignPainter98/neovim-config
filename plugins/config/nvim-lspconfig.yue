@@ -5,28 +5,38 @@ export ft = [ lang for lang, _ in pairs servers ]
 export dependencies =
   * 'williamboman/mason.nvim'
   * 'williamboman/mason-lspconfig.nvim'
+  * 'nvim-telescope/telescope.nvim'
 
 export config = ->
   import 'lspconfig'
   import 'cmp_nvim_lsp' as :default_capabilities
+  import 'telescope.builtin' as :lsp_references, :lsp_implementations
+  import tbl_extend from vim
 
   on_attach = (_, _) ->
-    vim.notify "Attached in #{$FILE}"
+    vim.notify "Language server attached!"
     with vim.keymap
       import buf from vim.lsp
-      .set 'n', '<leader>r', buf.rename, desc: 'Rename'
-      .set 'n', '<leader>ca', buf.code_action, desc: 'Code action'
-      .set 'n', '<leader>gd', buf.definition, desc: 'Go to definition'
-      .set 'n', '<leader>gi', buf.implementation, desc: 'Go to implementation'
-      .set 'n', '<leader>gr', (require 'telescope.builtin').lsp_references, desc: 'See references'
-      .set 'n', 'K', buf.hover, desc: 'Hover'
+      .set 'n', '<leader>lr', buf.rename, desc: 'Rename'
+      .set 'n', '<leader>la', buf.code_action, desc: 'Code action'
+      .set 'n', '<leader>ld', buf.definition, desc: 'Go to definition'
+      .set 'n', '<leader>lt', buf.type_definition, desc: 'Go to type definition'
+      .set 'n', '<leader>ls', buf.workspace_symbol, desc: 'Go to type definition'
+      .set 'n', '<leader>li', lsp_implementation, desc: 'See implementations'
+      .set 'n', '<leader>lR', lsp_references, desc: 'See references'
+      .set 'n', '<leader>lc', lsp_incoming_calls, desc: 'See incoming calls'
+      .set 'n', '<leader>lC', lsp_outgoing_calls, desc: 'See outgoing calls'
+      .set 'n', 'K', buf.lover, desc: 'Hover'
 
   capabilities = default_capabilities!
+
+  with lspconfig.util
+    .default_config = tbl_extend 'force', .default_config,
+      :on_attach
+      :capabilties
   for lang, server in pairs servers
       { :name, :capabilities=capabilities, :on_attach=on_attach, :settings={} } = server
       lspconfig[name].setup
-        :capabilities
-        :on_attach
         :settings
       -- flags:
       --   debounce_text_changes: 150

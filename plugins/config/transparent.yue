@@ -8,6 +8,11 @@ export config = ->
 
   setup
     extra_groups:
+      * 'DiagnosticSignError'
+      * 'DiagnosticSignWarn'
+      * 'DiagnosticSignHint'
+      * 'DiagnosticSignInfo'
+      * 'DiagnosticSignOk'
       * 'GitSignsAdd'
       * 'GitSignsAddLn'
       * 'GitSignsChange'

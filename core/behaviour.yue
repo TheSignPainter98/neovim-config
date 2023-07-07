@@ -1,3 +1,5 @@
+import sign_define from vim.fn
+
 vim.cmd 'packadd termdebug'
 
 with vim.opt
@@ -34,3 +36,22 @@ with vim.opt
   -- Misc
   .ttimeoutlen = 100
   .updatetime = 1000
+
+vim.diagnostic.config
+  virtual_text:
+    prefix: '●'
+  severity_sort: true
+  float:
+    source: 'always'
+
+signs =
+  Error: " "
+  Warn: " "
+  Hint: " "
+  Info: " "
+for kind, text in pairs signs
+  hl = "DiagnosticSign#{kind}"
+  sign_define hl,
+    :text
+    texthl: hl
+    numhl: hl

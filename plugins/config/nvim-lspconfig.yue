@@ -10,7 +10,7 @@ export dependencies =
 export config = ->
   import 'lspconfig'
   import 'cmp_nvim_lsp' as :default_capabilities
-  import 'telescope.builtin' as :lsp_references, :lsp_implementations
+  import 'telescope.builtin' as :lsp_references, :lsp_implementations, :lsp_incoming_calls, :lsp_outgoing_calls
   import tbl_extend from vim
 
   on_attach = (_, _) ->
@@ -22,7 +22,7 @@ export config = ->
       .set 'n', '<leader>ld', buf.definition, desc: 'Go to definition'
       .set 'n', '<leader>lt', buf.type_definition, desc: 'Go to type definition'
       .set 'n', '<leader>ls', buf.workspace_symbol, desc: 'Go to type definition'
-      .set 'n', '<leader>li', lsp_implementation, desc: 'See implementations'
+      .set 'n', '<leader>li', lsp_implementations, desc: 'See implementations'
       .set 'n', '<leader>lR', lsp_references, desc: 'See references'
       .set 'n', '<leader>lc', lsp_incoming_calls, desc: 'See incoming calls'
       .set 'n', '<leader>lC', lsp_outgoing_calls, desc: 'See outgoing calls'

@@ -28,3 +28,19 @@ autocmd 'TermLeave',
       .number = true
       .relativenumber = true
       .wrap = true
+
+conceal = ->
+  vim.cmd [[ syntax conceal on ]]
+  vim.o.conceallevel = 1
+  substitutions =
+    'λ':
+      * 'fn'
+      * 'func'
+      * 'lambda'
+    '←': 'return'
+  for symbol, keywords in pairs substitutions
+    if 'table' != type keywords
+      keywords = { keywords }
+    for keyword in *keywords
+      vim.cmd "syntax keyword Normal #{keyword} conceal cchar=#{symbol}"
+vim.api.nvim_create_user_command 'Conceal', conceal, {}

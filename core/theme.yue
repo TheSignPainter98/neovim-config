@@ -1,4 +1,8 @@
-{ nvim_create_autocmd: autocmd } = vim.api
+{
+  nvim_create_autocmd: autocmd,
+  nvim_create_augroup: autogroup,
+  :nvim_create_user_command
+} = vim.api
 
 with vim.opt
   -- Appearance
@@ -29,8 +33,18 @@ autocmd 'TermLeave',
       .relativenumber = true
       .wrap = true
 
+vim.cmd [[ syntax conceal on ]]
+
+vim.cmd [[ highlight @conceal cterm=NONE ctermbg=NONE ctermfg=darkblue ]]
 conceal = ->
-  vim.cmd [[ syntax conceal on ]]
+  conceal_groups =
+    * '@punctuation.delimiter'
+    * '@punctuation.delimiter.markdown'
+  for group in *conceal_groups
+    vim.cmd "highlight #{group} cterm=NONE ctermbg=NONE ctermfg=darkblue"
+nvim_create_user_command 'Conceal', conceal, {}
+
+conceal_fancy = ->
   vim.o.conceallevel = 1
   substitutions =
     'λ':
@@ -43,4 +57,13 @@ conceal = ->
       keywords = { keywords }
     for keyword in *keywords
       vim.cmd "syntax keyword Normal #{keyword} conceal cchar=#{symbol}"
-vim.api.nvim_create_user_command 'Conceal', conceal, {}
+nvim_create_user_command 'ConcealFancy', conceal_fancy, {}
+
+autocmd 'VimEnter',
+  pattern: '*'
+  group: autogroup 'conceal', clear: true
+  callback: conceal_fancy
+
+unconceal_fancy = ->
+  vim.o.conceallevel = 0
+nvim_create_user_command 'UnconcealFancy', unconceal_fancy, {}

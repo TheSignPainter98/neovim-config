@@ -47,16 +47,22 @@ export setup = (config={}) ->
 
   nvim_create_user_command 'UDash', udash, {}
 
-local buf
-export udash = ->
+local dashbuf
+export udash = (buf, force=false) ->
+  if not force and dashbuf?
+    return
+
   import nvim_create_buf, nvim_get_current_win, nvim_win_set_buf, nvim_buf_set_name, nvim_buf_set_text, nvim_set_option_value, nvim_buf_add_highlight, nvim_set_hl, nvim_create_namespace from vim.api
 
+  unless buf?
+    buf = nvim_create_buf true, true
+    nvim_buf_set_name buf, 'dash'
+    dashbuf = buf
   win = nvim_get_current_win!
-  if buf?
-    nvim_win_set_buf win, buf
+  if dashbuf?
+    nvim_win_set_buf win, dashbuf
     return
-  buf = nvim_create_buf true, true
-  nvim_buf_set_name buf, 'dash'
+
   text = { ...banner, ...subtitle }
   nvim_buf_set_text buf, 0, 0, -1, 0, text
 

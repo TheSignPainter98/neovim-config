@@ -18,8 +18,8 @@ export config = ->
     with vim.keymap
       import buf from vim.lsp
       .set 'n', '<leader>lr', buf.rename, desc: 'Rename'
+      .set 'n', '<leader>d', buf.definition, desc: 'Go to definition'
       .set 'n', '<leader>la', buf.code_action, desc: 'Code action'
-      .set 'n', '<leader>ld', buf.definition, desc: 'Go to definition'
       .set 'n', '<leader>lt', buf.type_definition, desc: 'Go to type definition'
       .set 'n', '<leader>ls', buf.workspace_symbol, desc: 'Go to type definition'
       .set 'n', '<leader>li', lsp_implementations, desc: 'See implementations'

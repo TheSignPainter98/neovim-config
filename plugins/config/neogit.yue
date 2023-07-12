@@ -1,0 +1,26 @@
+export name = 'NeogitOrg/neogit'
+export dependencies = 'nvim-lua/plenary.nvim'
+
+mode = 'n'
+mappings =
+  * keys: '<leader>gs'
+    desc: 'Open git'
+    :mode
+    callback: ->
+      import 'neogit' as :open
+      open!
+export keys = with {}
+  for mapping in *mappings
+    [] = with vim.deepcopy mapping
+      [1] = .keys
+      .keys = nil
+      .callback = nil
+  -- * { '<leader>gg', (-> (require 'neogit').open!), desc: 'Open git window' }
+
+export config = ->
+  import 'neogit' as :setup
+  setup {}
+
+  for mapping in *mappings
+    with mapping
+      vim.keymap.set .mode, .keys, .callback

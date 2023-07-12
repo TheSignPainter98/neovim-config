@@ -27,7 +27,6 @@ plugins =
   * require 'plugins.config.leap'
   * require 'plugins.config.formatter'
   * require 'plugins.config.yuescript-vim'
-  * require 'plugins.config.vgit'
   * require 'plugins.config.nvim-autopairs'
   * require 'plugins.config.indentmini'
   * require 'plugins.config.transparent'
@@ -48,6 +47,7 @@ plugins =
   * require 'plugins.config.highlight-undo'
   * require 'plugins.config.otter'
   * require 'plugins.config.nvim-colorizer'
+  * require 'plugins.config.neogit'
 
 no_copy = do
   no_copy_fields =

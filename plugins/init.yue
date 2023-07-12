@@ -47,6 +47,7 @@ plugins =
   * require 'plugins.config.cmp-under-comparator'
   * require 'plugins.config.highlight-undo'
   * require 'plugins.config.otter'
+  * require 'plugins.config.nvim-colorizer'
 
 no_copy = do
   no_copy_fields =

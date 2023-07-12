@@ -103,5 +103,7 @@ export udash = (buf, force=false) ->
     .signcolumn     = 'no'
     .winbar         = ''
     .stc            = ''
+    .fillchars      =
+      eob: ' '
 
   nvim_win_set_buf win, buf

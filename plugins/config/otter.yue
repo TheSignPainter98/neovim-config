@@ -4,17 +4,13 @@ export dependencies =
   * 'neovim/nvim-lspconfig'
   * 'nvim-treesitter/nvim-treesitter'
 
-inherent_injections =
-  * 'em'
-  * 'markdown'
 custom_injections = do
   files = vim.split (vim.fn.glob '~/.config/nvim/queries/*/injections.scm'), '\n'
   [ file\match '%.config/nvim/queries/([^/]*)/injections.scm$' for file in *files ]
 export ft = {
-  ...inherent_injections
+  'em'
+  'markdown'
   ...custom_injections
 }
 
-export config = ->
-  import 'otter.config' as :setup
-  setup!
+export opts = {}

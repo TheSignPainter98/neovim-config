@@ -38,6 +38,7 @@
   "trouble.nvim": { "branch": "main", "commit": "d99e2abd10808ef91738ce98a5c767e6a51df449" },
   "vgit.nvim": { "branch": "main", "commit": "a62ad74471b3612de68a5e78a893b867eb33332e" },
   "vim-litecorrect": { "branch": "master", "commit": "a914b1240c2ad35f9a11c0211c15b9199a9af73a" },
+  "vim-rhai": { "branch": "main", "commit": "b0585e2c92a4a64edcd060836ae41d1e698ebc20" },
   "vim-textobj-quote": { "branch": "master", "commit": "7ce5b324ebd21f3bc98ec11e534ed4e9677834c9" },
   "vim-textobj-user": { "branch": "master", "commit": "41a675ddbeefd6a93664a4dc52f302fe3086a933" },
   "yuescript-vim": { "branch": "master", "commit": "4a1065386b8396cb138d3cda0362fdadfefb8576" }

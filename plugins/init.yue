@@ -45,6 +45,7 @@ plugins =
   * require 'plugins.config.udash'
   * require 'plugins.config.vgit'
   * require 'plugins.config.vim-litecorrect'
+  * require 'plugins.config.vim-rhai'
   * require 'plugins.config.vim-textobj-quote'
   * require 'plugins.config.vim-textobj-user'
   * require 'plugins.config.yuescript-vim'

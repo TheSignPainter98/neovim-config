@@ -30,6 +30,7 @@ export config = ->
       * 'python'
       * 'rust'
       * 'starlark'
+      * 'sql'
       * 'toml'
       * 'yaml'
     sync_install: false

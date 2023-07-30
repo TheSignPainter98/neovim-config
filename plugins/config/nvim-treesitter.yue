@@ -32,6 +32,7 @@ export config = ->
       * 'starlark'
       * 'sql'
       * 'toml'
+      * 'vim'
       * 'yaml'
     sync_install: false
     auto_install: true

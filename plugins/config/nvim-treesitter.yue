@@ -157,8 +157,8 @@ export config = ->
 
   nvim_create_user_command 'FormatEmbeddedStarlark', (-> format_starlark!), {}
 
-  with group = autogroup 'go-format-starlark', clear: true
-    autocmd 'BufWritePre',
-      :group
-      pattern: '*.go'
-      callback: -> format_starlark!
+  -- with group = autogroup 'go-format-starlark', clear: true
+  --   autocmd 'BufWritePre',
+  --     :group
+  --     pattern: '*.go'
+  --     callback: -> format_starlark!

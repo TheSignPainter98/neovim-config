@@ -13,6 +13,7 @@ plugins =
   * require 'plugins.config.cmp-under-comparator'
   * require 'plugins.config.comment'
   * require 'plugins.config.crafttweaker-vim-highlighting'
+  * require 'plugins.config.crates'
   * require 'plugins.config.emblem'
   * require 'plugins.config.fine-cmdline'
   * require 'plugins.config.formatter'

@@ -3,8 +3,8 @@ export dependencies = 'nvim-lua/plenary.nvim'
 -- Requires fd and rg
 
 export keys =
-  * { '<leader>ff', '<cmd>Telescope find_files<cr>', desc: 'Find files' }
-  * { '<leader>fF', '<cmd>Telescope git_files<cr>', desc: 'Find committed files' }
+  * { '<leader>ff', '<cmd>Telescope find_files hidden=true<cr>', desc: 'Find files' }
+  * { '<leader>fF', '<cmd>Telescope git_files hidden=true no_ignore=true<cr>', desc: 'Find committed files' }
   * { '<leader>fg', '<cmd>Telescope live_grep<cr>', desc: 'Live grep' }
   * { '<leader>fb', '<cmd>Telescope buffers<cr>', desc: 'Find buffer' }
   * { '<leader>fk', '<cmd>Telescope keymaps<cr>', desc: 'Find keymap' }

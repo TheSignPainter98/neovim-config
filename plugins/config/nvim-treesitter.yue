@@ -59,7 +59,7 @@ export config = ->
       )
       arguments: (argument_list
         (raw_string_literal) @starlark
-        (#offset! @starlark 1 0 -1 0)
+        ; (#offset! @starlark 1 0 -1 0)
       )
     )
   ]]

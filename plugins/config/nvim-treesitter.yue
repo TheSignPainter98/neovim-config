@@ -38,8 +38,8 @@ export config = ->
     auto_install: true
     highlight:
       enable: true
-    context_commentstring:
-      enable: true
+    -- context_commentstring:
+    --   enable: true
 
   import concat from table
   import jobstart from vim.fn

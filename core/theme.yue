@@ -19,8 +19,9 @@ with vim.opt
     vert: ' '
     eob: '·'
 
-with vim.o
-  .t_ut = ''
+-- Removed from nvim v0.10
+-- with vim.o
+--   .t_ut = ''
 
 for event in *{ 'TermOpen', 'TermEnter' }
   autocmd event,

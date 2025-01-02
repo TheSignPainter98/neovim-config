@@ -7,7 +7,7 @@
 export name = 'TheSignPainter98/udash'
 export dir = do
   HOME = os.getenv('HOME') ?? error 'no home!'
-  ";#{HOME}/.config/nvim/plugins/local/udash/"
+  "#{HOME}/.config/nvim/plugins/local/udash/"
 export lazy = false
 export cmd = 'Udash'
 

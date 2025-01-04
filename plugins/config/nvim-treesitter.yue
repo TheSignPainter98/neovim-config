@@ -3,6 +3,9 @@ export lazy = false
 export dependencies = 'JoosepAlviste/nvim-ts-context-commentstring'
 
 export config = ->
+  with require 'nvim-treesitter.install'
+    .prefer_git = true
+
   import 'nvim-treesitter.configs' as :setup
   setup
     ensure_installed:

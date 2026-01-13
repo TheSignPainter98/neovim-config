@@ -1,6 +1,7 @@
 import 'plugins.config.language_servers' as :servers
 
 export name = 'neovim/nvim-lspconfig'
+export tag = "v2.5.0"
 export ft = [ lang for lang, _ in pairs servers ]
 export dependencies =
   * 'williamboman/mason.nvim'
@@ -8,7 +9,6 @@ export dependencies =
   * 'nvim-telescope/telescope.nvim'
 
 export config = ->
-  import 'lspconfig'
   import 'cmp_nvim_lsp' as :default_capabilities
   import 'telescope.builtin' as :lsp_references, :lsp_implementations, :lsp_incoming_calls, :lsp_outgoing_calls
   import tbl_extend from vim
@@ -30,13 +30,14 @@ export config = ->
 
   capabilities = default_capabilities!
 
-  with lspconfig.util
-    .default_config = tbl_extend 'force', .default_config,
-      :on_attach
-      :capabilties
-  for lang, server in pairs servers
-      { :name, :capabilities=capabilities, :on_attach=on_attach, :settings={} } = server
-      lspconfig[name].setup
-        :settings
-      -- flags:
-      --   debounce_text_changes: 150
+  -- with lspconfig.util
+  --   .default_config = tbl_extend 'force', .default_config,
+  --     :on_attach
+  --     :capabilties
+  for lang, _ in pairs servers
+	vim.lsp.enable lang
+  --     { :name, :capabilities=capabilities, :on_attach=on_attach, :settings={} } = server
+  --     lspconfig[name].setup
+  --       :settings
+  --     -- flags:
+  --     --   debounce_text_changes: 150

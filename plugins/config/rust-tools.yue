@@ -1,0 +1,20 @@
+export name = 'simrat39/rust-tools.nvim'
+-- export name = 'mrcjkb/rustaceanvim'
+export ft = 'rust'
+export dependencies =
+  * 'neovim/nvim-lspconfig'
+  * 'williamboman/mason-lspconfig.nvim'
+  * 'hrsh7th/cmp-nvim-lsp'
+
+export config = ->
+  import "rust-tools" as :setup, :hover_actions, :code_action_group
+  setup
+    capabilities: (require 'cmp_nvim_lsp').default_capabilities!
+    on_attach: (_, buffer) ->
+      vim.notify "Attached in #{$FILE}"
+      with vim.keymap
+        .set 'n', '<C-space>', hover_actions.hover_actions, :buffer
+        .set 'n', '<leader>a', code_action_group.code_action_group, :buffer
+    tools:
+      hover_actions:
+        auto_focus: true

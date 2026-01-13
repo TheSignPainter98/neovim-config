@@ -6,54 +6,78 @@ package.path ..= do
     ";#{HOME}/.config/nvim/plugins/local/?/init.lua"
 
 plugins =
+  -- Completions
   * require 'plugins.config.cmp-buffer'
   * require 'plugins.config.cmp-cmdline'
   * require 'plugins.config.cmp-nvim-lsp'
   * require 'plugins.config.cmp-path'
   * require 'plugins.config.cmp-under-comparator'
-  * require 'plugins.config.comment'
-  * require 'plugins.config.crafttweaker-vim-highlighting'
-  * require 'plugins.config.crates'
-  * require 'plugins.config.emblem'
-  * require 'plugins.config.fine-cmdline'
-  * require 'plugins.config.formatter'
-  * require 'plugins.config.gh'
-  * require 'plugins.config.gruvbox'
-  * require 'plugins.config.highlight-undo'
-  * require 'plugins.config.indentmini'
-  * require 'plugins.config.leap'
-  * require 'plugins.config.litee'
-  * require 'plugins.config.lualine'
   * require 'plugins.config.luasnip'
+  * require 'plugins.config.nvim-cmp'
+
+  -- Theme
+  * require 'plugins.config.gruvbox'
+  * require 'plugins.config.indentmini'
+  * require 'plugins.config.lualine'
+  * require 'plugins.config.nvim-web-devicons'
+  * require 'plugins.config.transparent'
+
+  -- Git
+  * require 'plugins.config.vgit'
+
+  -- -- Floating command line
+  -- * require 'plugins.config.fine-cmdline'
+
+  -- Telescope
+  * require 'plugins.config.telescope'
+
+  -- Utilities
+  * require 'plugins.config.oil'
+  * require 'plugins.config.trouble'
+  * require 'plugins.config.leap'
+
+  -- LSP helpers
+  * require 'plugins.config.nvim-lsp-endhints'
+  * require 'plugins.config.nvim-lspconfig'
+
+  -- Behaviour
+  * require 'plugins.config.comment'
+  * require 'plugins.config.nvim-ts-context-commentstring'
+  * require 'plugins.config.formatter'
+  * require 'plugins.config.nvim-autopairs'
+  * require 'plugins.config.nvim-surround'
+
+  -- Tree-sitter
+  * require 'plugins.config.nvim-treesitter'
+
+  -- * require 'plugins.config.gh'
+  -- * require 'plugins.config.highlight-undo'
+  -- * require 'plugins.config.litee'
+  -- * require 'plugins.config.nvim-colorizer'
+  -- * require 'plugins.config.otter'
+  -- * require 'plugins.config.playground'
+  -- * require 'plugins.config.todo-comments'
+  -- * require 'plugins.config.treesj'
+  -- * require 'plugins.config.udash'
+  -- * require 'plugins.config.vim-textobj-quote'
+  -- * require 'plugins.config.vim-textobj-user'
+
+  -- Languages
+  * require 'plugins.config.emblem'
+  * require 'plugins.config.yuescript-vim'
+  * require 'plugins.config.rustaceanvim'
+  * require 'plugins.config.crates' -- Rust
+  * require 'plugins.config.crafttweaker-vim-highlighting'
+  * require 'plugins.config.vim-rhai'
+
+  -- Text-writing
+  * require 'plugins.config.vim-litecorrect'
+
+  -- Dependencies
   * require 'plugins.config.mason'
   * require 'plugins.config.mason-lspconfig'
   * require 'plugins.config.nui'
-  * require 'plugins.config.nvim-autopairs'
-  * require 'plugins.config.nvim-cmp'
-  * require 'plugins.config.nvim-colorizer'
-  * require 'plugins.config.nvim-lsp-endhints'
-  * require 'plugins.config.nvim-lspconfig'
-  * require 'plugins.config.nvim-surround'
-  * require 'plugins.config.nvim-treesitter'
-  * require 'plugins.config.nvim-ts-context-commentstring'
-  * require 'plugins.config.nvim-web-devicons'
-  * require 'plugins.config.oil'
-  * require 'plugins.config.otter'
-  * require 'plugins.config.playground'
   * require 'plugins.config.plenary'
-  * require 'plugins.config.rustaceanvim'
-  * require 'plugins.config.telescope'
-  * require 'plugins.config.todo-comments'
-  * require 'plugins.config.transparent'
-  * require 'plugins.config.treesj'
-  * require 'plugins.config.trouble'
-  * require 'plugins.config.udash'
-  * require 'plugins.config.vgit'
-  * require 'plugins.config.vim-litecorrect'
-  * require 'plugins.config.vim-rhai'
-  * require 'plugins.config.vim-textobj-quote'
-  * require 'plugins.config.vim-textobj-user'
-  * require 'plugins.config.yuescript-vim'
 
 no_copy = do
   no_copy_fields =

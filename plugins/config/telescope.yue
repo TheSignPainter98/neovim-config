@@ -1,4 +1,5 @@
 export name = 'nvim-telescope/telescope.nvim'
+export tag = "v0.2.1"
 export dependencies = 'nvim-lua/plenary.nvim'
 -- Requires fd and rg
 

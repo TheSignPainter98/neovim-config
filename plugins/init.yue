@@ -42,10 +42,11 @@ plugins =
 
   -- Behaviour
   * require 'plugins.config.comment'
-  * require 'plugins.config.nvim-ts-context-commentstring'
   * require 'plugins.config.formatter'
   * require 'plugins.config.nvim-autopairs'
   * require 'plugins.config.nvim-surround'
+  * require 'plugins.config.nvim-ts-context-commentstring'
+  * require 'plugins.config.treesj'
 
   -- Tree-sitter
   * require 'plugins.config.nvim-treesitter'
@@ -57,7 +58,6 @@ plugins =
   -- * require 'plugins.config.otter'
   -- * require 'plugins.config.playground'
   -- * require 'plugins.config.todo-comments'
-  -- * require 'plugins.config.treesj'
   -- * require 'plugins.config.udash'
   -- * require 'plugins.config.vim-textobj-quote'
   -- * require 'plugins.config.vim-textobj-user'

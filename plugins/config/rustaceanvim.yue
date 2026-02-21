@@ -16,6 +16,10 @@ autocmd 'LspAttach',
   callback: ->
     import 'telescope.builtin' as :lsp_references, :lsp_implementations, :lsp_incoming_calls, :lsp_outgoing_calls
 
+    -- vim.g.rustaceanvim ??= {}
+    -- vim.g.rustaceanvim.rustc ??= {}
+    -- vim.g.rustaceanvim.rustc.default_edition ??= '2024'
+
     vim.notify "language server attached!"
     with vim.keymap
       import buf from vim.lsp
